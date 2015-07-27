@@ -58,7 +58,7 @@ class SourceMap():
         self.sel_azpoints = []
         self.sel_elpoints = []
         
-        #fields to contain coordinate data of ephemerides
+        #fields to contain coordinate data of solar system bodies
         self.toggle_ephem = True
         self.ephems = []
         self.ephem_azpoints = []
@@ -135,8 +135,8 @@ class SourceMap():
     def update(self):
         """ Updates the time of the SourceMap for the current map state 
         (paused, unpaused/live, unpaused/timelapse). Then updates the coordinates 
-        of each source, the coordinates of the ephemerides, the antenna status, 
-        and the strip chart data according to this time.
+        of each source, the coordinates of the solar system bodies, the antenna 
+        status, and the strip chart data according to this time.
         """
         
         self.azpoints = []
@@ -159,7 +159,7 @@ class SourceMap():
         #calculate the julian date and lst
         self.set_time(self.time)
         
-        #update ephemeride coordinates if user has them turned on
+        #update solar system body coordinates if user has them turned on
         if self.toggle_ephem:
             self.update_ephem()        
         
@@ -330,16 +330,16 @@ class SourceMap():
         return az, el
         
     def update_ephem(self):
-        """Using pynovas, updates the equatorial positions of the ephemerides 
-        given a time. Also asigns each ephemeride a color, therefore, after
-        calling split(), the ephemeride sources are always longer than regular
-        sources.
+        """Using pynovas, updates the equatorial positions of the solar system 
+        bodies given a time. Also asigns each solar system body a color, therefore, 
+        after calling split(), the solar system body sources are always longer than 
+        regular sources.
         """
         
-        #the ephemerides are the last 10 sources
+        #the solar system bodies are the last 10 sources
         self.allsources = self.allsources[:-10]
         
-        #create sources containing ephemeride coordinate and color information
+        #create sources containing solar system body coordinate and color information
         #add them to a list of sources 
         ra, dec, dis = novas.astro_planet(self.jd_tt, self.ephems[0])
         self.allsources.append(self.to_source_format(ra,dec,"Mercury") + " 255 120 0")
@@ -567,7 +567,7 @@ class SourceMap():
                 
     def acquire_allsources(self):
         """Iterates through source list and acquires all lines containing a 
-        source with coordinates. Also adds on ephemerides using the same format
+        source with coordinates. Also adds on solar system bodies using the same format
         and creates lists of equatorial coordinates needed for grid calculation.        
         """
         
@@ -576,14 +576,14 @@ class SourceMap():
                 self.allsources.append(aline)
                 self.namelist.append(aline.split()[0])
         
-        #create a list of all ephemeride objects
+        #create a list of all solar system body objects
         self.ephems = [novas.make_object(0, 1, 'Mercury', None), novas.make_object(0, 2, 'Venus', None),
                        novas.make_object(0, 4, 'Mars', None), novas.make_object(0, 5, 'Jupiter', None),
                        novas.make_object(0, 6, 'Saturn', None), novas.make_object(0, 7, 'Uranus', None),
                        novas.make_object(0, 8, 'Neptune', None), novas.make_object(0, 9, 'Pluto', None),
                        novas.make_object(0, 10, 'Sun', None), novas.make_object(0, 11, 'Moon', None)]
         
-        #add temorary ephemeride sources allsources               
+        #add temorary solar system body sources to allsources               
         self.allsources.append("Mercury	     0 0 0.0  +0 0 0.0		  2000   0.0   0 0 0")
         self.allsources.append("Venus	     0 0 0.0  +0 0 0.0		  2000   0.0   0 0 0")
         self.allsources.append("Mars	     0 0 0.0  +0 0 0.0		  2000   0.0   0 0 0")

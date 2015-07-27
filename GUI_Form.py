@@ -28,7 +28,7 @@ class GUI_Form():
         self.win.setWindowTitle('Radio Source Sky Map: Haystack Observatory')
         self.win.setWindowIcon(QtGui.QIcon('/home/msiebert/Documents/MIT_REU/37m_GUI/Haystack_Icon.gif'))
         
-        self.win.resize(1600,700)
+        self.win.resize(1610,700)
         self.gridLayout = QtGui.QGridLayout(self.win)
         
         #main plot and strip charts
@@ -203,7 +203,7 @@ class GUI_Form():
         self.gridLayout.addWidget(self.trackbut, 18, 5, 1, 1)
         self.trackbut.clicked.connect(self.toggle_track)
         
-        #button to toggle ephemerides
+        #button to toggle solar system bodies
         self.ephembut = QtGui.QPushButton("Toggle Ephem")
         self.gridLayout.addWidget(self.ephembut, 20, 5, 1, 1)
         self.ephembut.clicked.connect(self.toggle_ephems)
@@ -314,7 +314,7 @@ class GUI_Form():
             self.newmap.toggletrack = False
 
     def toggle_ephems(self):
-        """Toggles whether or not ephemerides appear on the map."""
+        """Toggles whether or not solar system bodies appear on the map."""
         
         if self.newmap.toggle_ephem == False:
             self.newmap.toggle_ephem = True
@@ -509,7 +509,7 @@ class GUI_Form():
         #update the target source information                
         self.targetlabel.setText("<body style=\" color: red;\">""Target Source: " + self.newmap.target)
         
-        #if target source is an ephemeride do not allow user to toggle ephemerides
+        #if target source is a solar system body do not allow user to toggle ephem
         if len(self.newmap.tarsource.split()) > 9:
             self.newmap.toggle_ephem = True
             self.ephembut.setEnabled(False)
@@ -539,8 +539,9 @@ class GUI_Form():
             tracktext.setPos(self.newmap.clickazpoint, self.newmap.clickelpoint)
             self.azlabel.setText("Clicked Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
             self.ellabel.setText("Clicked El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
+
         
-        #update the ephemeride positions    
+        #update the solar system body positions    
         if self.newmap.toggle_ephem:
             for i in range (len(self.newmap.ephem_azpoints)):
                 curve.addPoints(x = [self.newmap.ephem_azpoints[i]], y = [self.newmap.ephem_elpoints[i]], 
