@@ -2,7 +2,7 @@
 """
 Created on Thu Jul 23 09:18:03 2015
 
-@author: msiebert
+@author: Matt Siebert
 """
 
 from pyqtgraph.Qt import QtGui, QtCore
