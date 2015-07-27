@@ -368,9 +368,14 @@ class GUI_Form():
                    mousePoint.y() > self.newmap.get_source_coords(source)[2] - 1):
                     if self.newmap.is_dataline(source):
                         self.newmap.choose_source(self.newmap.get_source_coords(source)[0]) 
+                        return
                     else:
                         if self.newmap.toggle_ephem:
                             self.newmap.choose_source(self.newmap.get_source_coords(source)[0])
+                            return
+        self.newmap.clicksource = ''                
+        self.newmap.clickazpoint = ''
+        self.newmap.clickelpoint = ''
                    
     def update(self):
         """Updates the sky map gui application to show sources at the correct location
@@ -539,6 +544,11 @@ class GUI_Form():
             tracktext.setPos(self.newmap.clickazpoint, self.newmap.clickelpoint)
             self.azlabel.setText("Clicked Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
             self.ellabel.setText("Clicked El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
+        else:
+            self.azlabel.setText("Clicked Az: ")
+            self.ellabel.setText("Clicked El: ")
+            self.ralabel.setText("Clicked Ra: ")
+            self.declabel.setText("Clicked Dec: ")
 
         
         #update the solar system body positions    
