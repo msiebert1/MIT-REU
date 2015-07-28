@@ -58,6 +58,11 @@ class SourceMap():
         self.sel_azpoints = []
         self.sel_elpoints = []
         
+        #fields to contain coordinate data of added sources
+        self.added_sources = []
+        self.add_azpoints = []
+        self.add_elpoints = []
+        
         #fields to contain coordinate data of solar system bodies
         self.toggle_ephem = True
         self.ephems = []
@@ -143,6 +148,8 @@ class SourceMap():
         self.elpoints = []
         self.sel_azpoints = []
         self.sel_elpoints = []
+        self.add_azpoints = []
+        self.add_elpoints = []
         self.ephem_azpoints = []
         self.ephem_elpoints = []
         
@@ -163,6 +170,7 @@ class SourceMap():
         if self.toggle_ephem:
             self.update_ephem()        
         
+        #update antenna status and strip charts
         self.update_antenna()
         if self.togglestrips:
             self.update_strips()
@@ -188,8 +196,10 @@ class SourceMap():
         for source in self.selectedsources:
             self.sel_azpoints.append(self.get_source_coords(source)[1])
             self.sel_elpoints.append(self.get_source_coords(source)[2])
-            
-
+        
+        for source in self.added_sources:
+            self.add_azpoints.append(self.get_source_coords(source)[1])
+            self.add_elpoints.append(self.get_source_coords(source)[2])
         
     def get_source_coords(self, source):
         """Uses pynovas to convert from ra and dec (given in the source list) 

@@ -178,10 +178,16 @@ class GUI_Form():
         self.utbut.clicked.connect(self.set_time)     
         
         #button to enter Umbrella commands
-        self.utbut = QtGui.QPushButton()
-        self.utbut.setText("- - - Enter Command - - -")
-        self.gridLayout.addWidget(self.utbut, 16, 6, 1, 1)
-        self.utbut.clicked.connect(self.command)
+        self.addbut = QtGui.QPushButton()
+        self.addbut.setText("- - - Add Object - - -")
+        self.gridLayout.addWidget(self.addbut, 16, 6, 1, 1)
+        self.addbut.clicked.connect(self.add)
+        
+        #button to enter new celestial object
+        self.cmdbut = QtGui.QPushButton()
+        self.cmdbut.setText("- - - Enter Command - - -")
+        self.gridLayout.addWidget(self.cmdbut, 17, 6, 1, 1)
+        self.cmdbut.clicked.connect(self.command)
         
         #button to reset axes    
         self.resetbut = QtGui.QPushButton("Reset Axes")
@@ -283,12 +289,28 @@ class GUI_Form():
             self.newmap.paused = False
         
     def command(self):
-        
+        from subprocess import call
         cmd, ok1 = QtGui.QInputDialog.getText(self.win, 'Umbrella Command', 
-            'Enter Command:')
-        sys.stdout.write(cmd)
+                                              'Enter Command:')
+#        sys.stdout.write(cmd)
+#        os.system("%s" %cmd)
+        call("%s" %cmd)
+
+    def add(self):
+        """Adds a user specified celestial object to the list of sources and 
+        allows for it to be plotted.
+        """
+        name, ok1 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
+                                              'Enter Name: ') 
+        ra, ok2 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
+                                              'Enter Ra (hms, J2000): ') 
+        dec, ok3 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
+                                              'Enter Dec (dms, J2000): ') 
+        source = name + " " + ra + " " + dec + " 2000" + " 0.0"
+        self.newmap.added_sources.append(source)
+        self.newmap.allsources.insert(0, source)
         
-            
+        
     def reset_Axes(self):
         """Resets the axes to original dimensions after user has changed them."""
         
@@ -355,7 +377,7 @@ class GUI_Form():
             evt (MouseClickEvent): Specific coordinates corresponding to where
                 the mouse was clicked
         """
-        
+
         pos = evt[0].scenePos() 
         if self.p.sceneBoundingRect().contains(pos):
             mousePoint = self.vb.mapSceneToView(pos)
@@ -511,6 +533,15 @@ class GUI_Form():
         curve.addPoints(x = self.newmap.sel_azpoints, y = self.newmap.sel_elpoints, size = 7, 
                         pen = 'w', brush = 'b', symbol = 'o')
         
+        #draw the added sources on the map
+        curve.addPoints(x = self.newmap.add_azpoints, y = self.newmap.add_elpoints, size = 7, 
+                        pen = 'w', brush = 'g', symbol = 'o')
+        for source in self.newmap.added_sources:
+            add_tracktext = pg.TextItem(text = "%s" % source.split()[0], color = 'g')
+            self.p.addItem(add_tracktext)       
+            add_tracktext.setPos(self.newmap.add_azpoints[self.newmap.added_sources.index(source)], 
+                                                          self.newmap.add_elpoints[self.newmap.added_sources.index(source)])
+            
         #update the target source information                
         self.targetlabel.setText("<body style=\" color: red;\">""Target Source: " + self.newmap.target)
         
@@ -534,6 +565,11 @@ class GUI_Form():
             self.azofflabel.setText("<body style=\" font-size:8pt;\">""Az-El Offset: %.2f" 
                                % (self.newmap.azoff) + degree_sign + " %.2f" 
                                % (self.newmap.eloff) + degree_sign)
+        else:
+            self.tarazlabel.setText("Target Az: ")
+            self.tarellabel.setText("Target El: ")
+            self.tarralabel.setText("Target Ra: ")
+            self.tardeclabel.setText("Target Dec: ")
         
         #update the clicked source information     
         if not self.newmap.clickazpoint == '' and not self.newmap.clickelpoint == '':
