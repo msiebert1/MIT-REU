@@ -4,6 +4,7 @@ Created on Wed Jul 15 10:07:25 2015
 
 @author: Matt Siebert
 """
+
 from sourcemap import SourceMap
 import pyqtgraph as pg
 import datetime

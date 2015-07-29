@@ -501,8 +501,8 @@ class SourceMap():
                 corresponding to a constant value of right ascension
         
         Each list in ra_azpoints will be plotted against the corresponding list
-        in ra_elpoints. This will be called each time the plot updates so that
-        the gridlines reflect the current time of the map.
+        in ra_elpoints. This will be called periodically so thatthe gridlines 
+        reflect the current time of the map.
         """
         
         ra_azpoints = [[],[],[],[],[],[],[],[],[],[],[],[]]

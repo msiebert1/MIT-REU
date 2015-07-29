@@ -22,12 +22,12 @@ class GUI_Form():
         """
         
         self.newmap = newmap
+        self.counter = 0
         
         #main window      
         self.win = QtGui.QWidget()
         self.win.setWindowTitle('Radio Source Sky Map: Haystack Observatory')
         self.win.setWindowIcon(QtGui.QIcon('/home/msiebert/Documents/MIT_REU/37m_GUI/Haystack_Icon.gif'))
-        
         self.win.resize(1610,700)
         self.gridLayout = QtGui.QGridLayout(self.win)
         
@@ -124,6 +124,11 @@ class GUI_Form():
         self.tardeclabel.setText("Target Dec: ")
         self.gridLayout.addWidget(self.tardeclabel, 17, 4, 1, 1)
         
+        self.pbar = QtGui.QProgressBar(self.win)
+        self.gridLayout.addWidget(self.pbar, 14, 9, 1, 1)
+#        self.pbar.setMinimum(0)
+#        self.pbar.setMaximum(10)
+#        self.pbar.setValue(6)
         #read schedule file and display with the current line colored red
         self.skdtext = QtGui.QTextEdit()
         if not newmap.skdfile == "N/A":
@@ -150,7 +155,7 @@ class GUI_Form():
             
         self.skdtext.setFont(QtGui.QFont ("Arial", 8))
         self.skdtext.setReadOnly(True)
-        self.gridLayout.addWidget(self.skdtext, 4, 9, 17, 1)
+        self.gridLayout.addWidget(self.skdtext, 15, 9, 4, 1)
         
         #set range and labels of axes
         self.p = self.plot
@@ -180,14 +185,20 @@ class GUI_Form():
         #button to enter Umbrella commands
         self.addbut = QtGui.QPushButton()
         self.addbut.setText("- - - Add Object - - -")
-        self.gridLayout.addWidget(self.addbut, 16, 6, 1, 1)
+        self.gridLayout.addWidget(self.addbut, 17, 6, 1, 1)
         self.addbut.clicked.connect(self.add)
         
-        #button to enter new celestial object
+        #button to add new celestial object
         self.cmdbut = QtGui.QPushButton()
         self.cmdbut.setText("- - - Enter Command - - -")
-        self.gridLayout.addWidget(self.cmdbut, 17, 6, 1, 1)
+        self.gridLayout.addWidget(self.cmdbut, 16, 6, 1, 1)
         self.cmdbut.clicked.connect(self.command)
+        
+        #button to remove added celestial objects
+        self.rembut = QtGui.QPushButton()
+        self.rembut.setText("Remove Objects")
+        self.gridLayout.addWidget(self.rembut, 18, 6, 1, 1)
+        self.rembut.clicked.connect(self.remove)
         
         #button to reset axes    
         self.resetbut = QtGui.QPushButton("Reset Axes")
@@ -238,7 +249,7 @@ class GUI_Form():
         self.numselitems = 0
         self.prev_skdline = newmap.skdline
         self.grid_decazs, self.grid_decels = newmap.get_const_decgrid()
-        
+        self.grid_raazs, self.grid_raels = newmap.get_const_ragrid()
     def pause(self):
         """Pauses the source map so that the time stays constant."""
         
@@ -290,11 +301,15 @@ class GUI_Form():
         
     def command(self):
         from subprocess import call
+        import os
         cmd, ok1 = QtGui.QInputDialog.getText(self.win, 'Umbrella Command', 
                                               'Enter Command:')
 #        sys.stdout.write(cmd)
-#        os.system("%s" %cmd)
-        call("%s" %cmd)
+        os.system("%s" %cmd)
+#        print type(cmd)
+#        print cmd
+#        call("%s" %cmd)
+#        call("jobs")                                 
 
     def add(self):
         """Adds a user specified celestial object to the list of sources and 
@@ -310,7 +325,14 @@ class GUI_Form():
         self.newmap.added_sources.append(source)
         self.newmap.allsources.insert(0, source)
         
+    def remove(self):
+        """Removes the user added celestial objects from the sky map."""
         
+        l = len(self.newmap.added_sources)
+        self.newmap.added_sources = []
+        for i in range (0,l):
+            del self.newmap.allsources[0]
+            
     def reset_Axes(self):
         """Resets the axes to original dimensions after user has changed them."""
         
@@ -403,7 +425,7 @@ class GUI_Form():
         """Updates the sky map gui application to show sources at the correct location
         for the displayed universal time.    
         """
-        
+        self.counter = self.counter + 1
         #must clear plot after every update
         self.p.clear()
         self.azstrip.clear()
@@ -436,7 +458,7 @@ class GUI_Form():
                                % (self.newmap.cmdelpoint) + degree_sign)
         
         #read schedule file and display with the current line colored red
-        if not self.newmap.skdfile == "N/A":                       
+        if not self.newmap.skdfile == "N/A":  
             skd = open(self.newmap.skdfile, 'r')
             textlines = skd.readlines()
             text = '<pre>'
@@ -457,10 +479,12 @@ class GUI_Form():
             if not self.newmap.skdline == self.prev_skdline:
                 self.skdtext.setText('<span>%s</span><pre><span style="color: #FF0000;">%s</span><span>%s</span>' %(text, curr, text2))
                 self.prev_skdline = self.newmap.skdline
-        
+            
+            self.cmdbut.setEnabled(False)
         else:
             self.skdtext.setText('No Active Schedule')
-            
+            self.cmdbut.setEnabled(True)
+        
         if not len(self.sourcetable.selectedItems()) == self.numselitems:
             self.newmap.selectedsources = []
             for cell in self.sourcetable.selectedItems():
@@ -483,9 +507,10 @@ class GUI_Form():
             
         #plots ra and dec gridlines with labels
         if self.newmap.togglegrid == True:
-            grid_raazs, grid_raels = self.newmap.get_const_ragrid()
-            for i in range(0,len(grid_raazs)):
-                grid = pg.PlotCurveItem(x = grid_raazs[i][:-1], y = grid_raels[i][:-1], 
+            if self.counter%5 == 0: #update ra grid periodically (improves framerate)
+                self.grid_raazs, self.grid_raels = self.newmap.get_const_ragrid()
+            for i in range(0,len(self.grid_raazs)):
+                grid = pg.PlotCurveItem(x = self.grid_raazs[i][:-1], y = self.grid_raels[i][:-1], 
                                         pen = pg.mkPen(color = (100,100,100)))
                 self.p.addItem(grid)
             for i in range(0,len(self.grid_decazs)):
@@ -496,7 +521,7 @@ class GUI_Form():
                 gridlabel = pg.TextItem(text = "Ra: %s" %(str(2*i)) + "h", 
                                         color = (100,100,100))
                 self.p.addItem(gridlabel)
-                gridlabel.setPos(grid_raazs[i][80], grid_raels[i][80])
+                gridlabel.setPos(self.grid_raazs[i][80], self.grid_raels[i][80])
                 gridlabel2 = pg.TextItem(text = "Dec: %s" %(str(-90 + i*15)) + degree_sign, 
                                          color = (205,103,0))
                 self.p.addItem(gridlabel2)
