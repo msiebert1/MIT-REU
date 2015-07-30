@@ -175,7 +175,7 @@ class SourceMap():
         if self.togglestrips:
             self.update_strips()
         
-        #update all source coordinates given the updated time       
+        #update all source coordinates given the updated time
         for source in self.allsources:
             if not source.split()[0] == self.clicksource and len(source.split()) < 10:
                 self.azpoints.append(self.get_source_coords(source)[1])
@@ -200,6 +200,7 @@ class SourceMap():
         for source in self.added_sources:
             self.add_azpoints.append(self.get_source_coords(source)[1])
             self.add_elpoints.append(self.get_source_coords(source)[2])
+
         
     def get_source_coords(self, source):
         """Uses pynovas to convert from ra and dec (given in the source list) 
@@ -397,7 +398,7 @@ class SourceMap():
         
         #find the target in the source list and determine the ra and dec
         for source in self.allsources:
-            if source.split()[0] == self.target:
+            if source.split()[0].lower() == self.target.lower():
                 self.tarsource = source 
                              
         #reset target source to default if it was not in the source list

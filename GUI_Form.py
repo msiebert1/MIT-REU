@@ -51,6 +51,14 @@ class GUI_Form():
         self.gridLayout.setColumnStretch(4,0)
         self.gridLayout.setColumnMinimumWidth(4,200)
         
+        self.border = QtGui.QFrame(self.win)
+        self.border.setFrameStyle(0x0006)
+        self.gridLayout.addWidget(self.border, 16, 1, 2, 2)
+        
+        self.border2 = QtGui.QFrame(self.win)
+        self.border2.setFrameStyle(0x0006)
+        self.gridLayout.addWidget(self.border2, 16, 3, 2, 2)
+        
         #list of sources for user to choose from 
         self.sourcetable = pg.TreeWidget(self.win)
         self.sourcetable.setSelectionMode(2)
@@ -96,13 +104,13 @@ class GUI_Form():
         self.gridLayout.addWidget(self.declabel, 17, 2, 1, 1)
         
         self.antlabel = QtGui.QLabel(self.win)
-        self.antlabel.setText("<body style=\" color: green;font-size:10pt;\">""Antenna Information:")
+        self.antlabel.setText("<body style=\" font-size:12pt;\">""Antenna Information:")
         self.gridLayout.addWidget(self.antlabel, 0, 9, 1, 1)
         self.cmdazlabel = QtGui.QLabel(self.win)
-        self.cmdazlabel.setText("<body style=\" font-size:8pt;\">""Cmd Az-El: 00.00 00.00")
+        self.cmdazlabel.setText("<body style=\" color: blue;font-size:8pt;\">""Cmd Az-El: 00.00 00.00")
         self.gridLayout.addWidget(self.cmdazlabel, 1, 9, 1, 1)
         self.actazlabel = QtGui.QLabel(self.win)
-        self.actazlabel.setText("<body style=\" font-size:8pt;\">""Actual Az-El: 00.00 00.00")
+        self.actazlabel.setText("<body style=\" color: green;font-size:8pt;\">""Actual Az-El: 00.00 00.00")
         self.gridLayout.addWidget(self.actazlabel, 2, 9, 1, 1)
         self.azofflabel = QtGui.QLabel(self.win)
         self.azofflabel.setText("<body style=\" font-size:8pt;\">""Az-El Offset: 00.00 00.00")
@@ -128,7 +136,8 @@ class GUI_Form():
         self.gridLayout.addWidget(self.pbar, 14, 9, 1, 1)
 #        self.pbar.setMinimum(0)
 #        self.pbar.setMaximum(10)
-#        self.pbar.setValue(6)
+#        self.pbar.setValue(1)
+#        self.pbar.hide()
         #read schedule file and display with the current line colored red
         self.skdtext = QtGui.QTextEdit()
         if not newmap.skdfile == "N/A":
@@ -316,14 +325,16 @@ class GUI_Form():
         allows for it to be plotted.
         """
         name, ok1 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
-                                              'Enter Name: ') 
+                                              'Enter Name (No Spaces): ') 
         ra, ok2 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
                                               'Enter Ra (hms, J2000): ') 
         dec, ok3 = QtGui.QInputDialog.getText(self.win, 'Add Celestial Object', 
                                               'Enter Dec (dms, J2000): ') 
+
         source = name + " " + ra + " " + dec + " 2000" + " 0.0"
-        self.newmap.added_sources.append(source)
-        self.newmap.allsources.insert(0, source)
+        if self.newmap.is_dataline(str(source)):        
+            self.newmap.added_sources.append(source)
+            self.newmap.allsources.insert(0, source)
         
     def remove(self):
         """Removes the user added celestial objects from the sky map."""
@@ -425,6 +436,7 @@ class GUI_Form():
         """Updates the sky map gui application to show sources at the correct location
         for the displayed universal time.    
         """
+        
         self.counter = self.counter + 1
         #must clear plot after every update
         self.p.clear()
@@ -439,21 +451,21 @@ class GUI_Form():
         
         degree_sign= u'\N{DEGREE SIGN}'
         k = self.newmap.clickra.find('.')
-        self.ralabel.setText("Clicked Ra: %s" % (self.newmap.clickra[:k] + self.newmap.clickra[k:k+4]))
+        self.ralabel.setText(" Clicked Ra: %s" % (self.newmap.clickra[:k] + self.newmap.clickra[k:k+4]))
         i = self.newmap.clickdec.find('.')
-        self.declabel.setText("Clicked Dec: %s" % (self.newmap.clickdec[:i] + self.newmap.clickdec[i:i+4]))
+        self.declabel.setText(" Clicked Dec: %s" % (self.newmap.clickdec[:i] + self.newmap.clickdec[i:i+4]))
         
         j = self.newmap.tarra.find('.')
-        self.tarralabel.setText("Target Ra: %s" 
+        self.tarralabel.setText(" Target Ra: %s" 
                            % (self.newmap.tarra[:j] + self.newmap.tarra[j:j+4]))
         m = self.newmap.tardec.find('.')
-        self.tardeclabel.setText("Target Dec: %s" 
+        self.tardeclabel.setText(" Target Dec: %s" 
                             % (self.newmap.tardec[:m] + self.newmap.tardec[m:m+4]))
         
-        self.actazlabel.setText("<body style=\" font-size:8pt;\">""Actual Az-El: %.2f" 
+        self.actazlabel.setText("<body style=\" color: green;font-size:8pt;\">""Actual Az-El: %.2f" 
                                % (self.newmap.antazpoint) + degree_sign + " %.2f" 
                                % (self.newmap.antelpoint) + degree_sign)
-        self.cmdazlabel.setText("<body style=\" font-size:8pt;\">""Cmd Az-El: %.2f" 
+        self.cmdazlabel.setText("<body style=\" color: blue;font-size:8pt;\">""Cmd Az-El: %.2f" 
                                % (self.newmap.cmdazpoint) + degree_sign + " %.2f" 
                                % (self.newmap.cmdelpoint) + degree_sign)
         
@@ -583,18 +595,18 @@ class GUI_Form():
             tar_tracktext = pg.TextItem(text = "%s" % self.newmap.target, color = 'r')
             self.p.addItem(tar_tracktext)       
             tar_tracktext.setPos(self.newmap.tarazpoint, self.newmap.tarelpoint)
-            self.tarazlabel.setText("Target Az: %.2f" 
+            self.tarazlabel.setText(" Target Az: %.2f" 
                                % (self.newmap.tarazpoint) + degree_sign)
-            self.tarellabel.setText("Target El: %.2f" 
+            self.tarellabel.setText(" Target El: %.2f" 
                                % (self.newmap.tarelpoint) + degree_sign)
             self.azofflabel.setText("<body style=\" font-size:8pt;\">""Az-El Offset: %.2f" 
                                % (self.newmap.azoff) + degree_sign + " %.2f" 
                                % (self.newmap.eloff) + degree_sign)
         else:
-            self.tarazlabel.setText("Target Az: ")
-            self.tarellabel.setText("Target El: ")
-            self.tarralabel.setText("Target Ra: ")
-            self.tardeclabel.setText("Target Dec: ")
+            self.tarazlabel.setText(" Target Az: ")
+            self.tarellabel.setText(" Target El: ")
+            self.tarralabel.setText(" Target Ra: ")
+            self.tardeclabel.setText(" Target Dec: ")
         
         #update the clicked source information     
         if not self.newmap.clickazpoint == '' and not self.newmap.clickelpoint == '':
@@ -603,13 +615,13 @@ class GUI_Form():
             tracktext = pg.TextItem(text = "%s" % self.newmap.clicksource, color = 'y')
             self.p.addItem(tracktext)
             tracktext.setPos(self.newmap.clickazpoint, self.newmap.clickelpoint)
-            self.azlabel.setText("Clicked Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
-            self.ellabel.setText("Clicked El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
+            self.azlabel.setText(" Clicked Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
+            self.ellabel.setText(" Clicked El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
         else:
-            self.azlabel.setText("Clicked Az: ")
-            self.ellabel.setText("Clicked El: ")
-            self.ralabel.setText("Clicked Ra: ")
-            self.declabel.setText("Clicked Dec: ")
+            self.azlabel.setText(" Clicked Az: ")
+            self.ellabel.setText(" Clicked El: ")
+            self.ralabel.setText(" Clicked Ra: ")
+            self.declabel.setText(" Clicked Dec: ")
 
         
         #update the solar system body positions    
