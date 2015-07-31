@@ -332,7 +332,8 @@ class GUI_Form():
                                               'Enter Dec (dms, J2000): ') 
 
         source = name + " " + ra + " " + dec + " 2000" + " 0.0"
-        if self.newmap.is_dataline(str(source)):        
+        source = str(source)
+        if self.newmap.is_dataline(source):        
             self.newmap.added_sources.append(source)
             self.newmap.allsources.insert(0, source)
         
@@ -363,7 +364,10 @@ class GUI_Form():
     def toggle_track(self):
         """Toggles whether or not the plot should be tracking a source"""
         
+        
         if self.newmap.toggletrack == False:
+            self.newmap.clickazpoints = []
+            self.newmap.clickelpoints = []
             self.newmap.toggletrack = True
         else:
             self.newmap.toggletrack = False
@@ -494,6 +498,7 @@ class GUI_Form():
             
             self.cmdbut.setEnabled(False)
         else:
+            self.prev_skdline = self.newmap.skdline
             self.skdtext.setText('No Active Schedule')
             self.cmdbut.setEnabled(True)
         
@@ -545,7 +550,7 @@ class GUI_Form():
         
         curve.addPoints(x = [self.newmap.cmdazpoint], y = [self.newmap.cmdelpoint], size = 30,
                         pen = pg.mkPen(color = (0,151,255)), brush = pg.mkBrush(color = (0,0,0)), symbol = "+")                     
-        curve.addPoints(x = [self.newmap.antazpoint], y = [self.newmap.antelpoint], size = 17, 
+        curve.addPoints(x = [self.newmap.antazpoint], y = [self.newmap.antelpoint], size = 18, 
                         pen = 'g', brush = 'g', symbol = "+")
         
         #draw tick marks corresponding to antenna position information                
@@ -559,9 +564,31 @@ class GUI_Form():
                                     y = [self.newmap.cmdelpoint, self.newmap.cmdelpoint], 
                                     pen= pg.mkPen(color = (0,151,255)))
         self.p.addItem(cmdtick2)
-        anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
-                                y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'g')
-        self.p.addItem(anttick)
+        if -180 <= self.newmap.wrappoint <= 180:
+            anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
+                                    y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'g')
+            self.p.addItem(anttick)
+        elif self.newmap.wrappoint > 180:
+            anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
+                                    y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'y')
+            self.p.addItem(anttick)
+            wraplabel = pg.TextItem(text = "CW", color = 'y')
+            wraplabel.setPos(self.newmap.antazpoint, self.p.viewRange()[1][0]+azticksize)
+            self.p.addItem(wraplabel)
+            wraptick = pg.PlotCurveItem(x = [98.8, 98.8], 
+                                    y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'r')
+            self.p.addItem(wraptick)
+        else:
+            anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
+                                    y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'y')
+            self.p.addItem(anttick)
+            wraplabel = pg.TextItem(text = "CCW", color = 'y')
+            wraplabel.setPos(self.newmap.antazpoint, self.p.viewRange()[1][0]+azticksize)
+            self.p.addItem(wraplabel)
+            wraptick = pg.PlotCurveItem(x = [258, 258], 
+                                    y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'r')
+            self.p.addItem(wraptick)
+            
         anttick2 = pg.PlotCurveItem(x = [self.p.viewRange()[0][0],self.p.viewRange()[0][0]+elticksize], 
                                  y = [self.newmap.antelpoint, self.newmap.antelpoint], pen= 'g')
         self.p.addItem(anttick2)

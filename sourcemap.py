@@ -78,7 +78,6 @@ class SourceMap():
         self.skdfile = ''
         self.skdline = 0
         self.wrappoint = 0
-        self.wrap = False
         self.azoff = 0
         self.eloff = 0
         self.azoffset_data = [0]
@@ -422,6 +421,7 @@ class SourceMap():
         self.antelpoint = float(line.split()[3])
         self.skdfile = line.split()[5]
         self.skdline = int(line.split()[6])
+        self.wrappoint = 80
         
         #calculate the offsets in antenna position
         self.azoff = self.antazpoint - self.cmdazpoint
