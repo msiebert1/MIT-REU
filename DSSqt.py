@@ -23,6 +23,8 @@ class DSSqt():
         up both plots to be used in the window.
         """
         
+        self.datafile = ''
+        
         #initialize various fields needed in the creation of plots
         self.num_nondatalines = 0   
         self.datalines_az = []
@@ -66,7 +68,6 @@ class DSSqt():
         #initialize field to contain lines of data
         self.datafile = open(afile, 'r')
         self.lines = self.datafile.readlines()
-            
         #determine index range that contain the az scan data (starts at index 2)
         self.endline_az = 2
         for aline in self.lines[2:]:
@@ -79,18 +80,19 @@ class DSSqt():
         
         #split up each line and append the data values to their respective fields
         for datum in self.datalines_az:
-            aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
-                aeloff, araoff, adecoff = datum.split()
-            self.day_az.append(aday)
-            self.time_az.append(atime)
-            self.tempch1_az.append(float(atempch1))
-            self.tempch2_az.append(float(atempch2))
-            self.tempch3_az.append(float(atempch3))
-            self.tempch4_az.append(float(atempch4))
-            self.azoff_az.append(float(aazoff))
-            self.eloff_az.append(float(aeloff))
-            self.raoff_az.append(float(araoff))
-            self.decoff_az.append(float(adecoff))
+            if len(datum.split()) == 10:
+                aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
+                    aeloff, araoff, adecoff = datum.split()
+                self.day_az.append(aday)
+                self.time_az.append(atime)
+                self.tempch1_az.append(float(atempch1))
+                self.tempch2_az.append(float(atempch2))
+                self.tempch3_az.append(float(atempch3))
+                self.tempch4_az.append(float(atempch4))
+                self.azoff_az.append(float(aazoff))
+                self.eloff_az.append(float(aeloff))
+                self.raoff_az.append(float(araoff))
+                self.decoff_az.append(float(adecoff))
         
         #determine index range that contain the el scan data 
         self.endline_el  = self.endline_az + 6
@@ -104,18 +106,19 @@ class DSSqt():
         
         #split up each line and append the data values to their respective fields
         for datum in self.datalines_el:
-            aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
-                aeloff, araoff, adecoff = datum.split()
-            self.day_el.append(aday)
-            self.time_el.append(atime)
-            self.tempch1_el.append(float(atempch1))
-            self.tempch2_el.append(float(atempch2))
-            self.tempch3_el.append(float(atempch3))
-            self.tempch4_el.append(float(atempch4))
-            self.azoff_el.append(float(aazoff))
-            self.eloff_el.append(float(aeloff))
-            self.raoff_el.append(float(araoff))
-            self.decoff_el.append(float(adecoff))
+            if len(datum.split()) == 10:
+                aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
+                    aeloff, araoff, adecoff = datum.split()
+                self.day_el.append(aday)
+                self.time_el.append(atime)
+                self.tempch1_el.append(float(atempch1))
+                self.tempch2_el.append(float(atempch2))
+                self.tempch3_el.append(float(atempch3))
+                self.tempch4_el.append(float(atempch4))
+                self.azoff_el.append(float(aazoff))
+                self.eloff_el.append(float(aeloff))
+                self.raoff_el.append(float(araoff))
+                self.decoff_el.append(float(adecoff))
     
     def animate(self):
         """Called continuously until az and el scans are complete. Finds the
@@ -124,9 +127,8 @@ class DSSqt():
         
         #read datafile lines and clears the data from the last animation call
         self.lines = []
-        thefile = open(self.livefile, 'r')
-        self.datafile = thefile
-        self.lines = self.datafile.readlines()
+        thefile = open(self.datafile, 'r')
+        self.lines = thefile.readlines()
         self.num_nondatalines = 0
         self.clear_data()
         
@@ -143,33 +145,35 @@ class DSSqt():
 
         #split up each line and append the data values to their respective fields
         for datum in self.datalines_az:
-            aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
-                aeloff, araoff, adecoff = datum.split()
-            self.day_az.append(aday)
-            self.time_az.append(atime)
-            self.tempch1_az.append(float(atempch1))
-            self.tempch2_az.append(float(atempch2))
-            self.tempch3_az.append(float(atempch3))
-            self.tempch4_az.append(float(atempch4))
-            self.azoff_az.append(float(aazoff))
-            self.eloff_az.append(float(aeloff))
-            self.raoff_az.append(float(araoff))
-            self.decoff_az.append(float(adecoff))
+            if len(datum.split()) == 10:
+                aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
+                    aeloff, araoff, adecoff = datum.split()
+                self.day_az.append(aday)
+                self.time_az.append(atime)
+                self.tempch1_az.append(float(atempch1))
+                self.tempch2_az.append(float(atempch2))
+                self.tempch3_az.append(float(atempch3))
+                self.tempch4_az.append(float(atempch4))
+                self.azoff_az.append(float(aazoff))
+                self.eloff_az.append(float(aeloff))
+                self.raoff_az.append(float(araoff))
+                self.decoff_az.append(float(adecoff))
         
         #split up each line and append the data values to their respective fields
         for datum in self.datalines_el:
-            aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
-                aeloff, araoff, adecoff = datum.split()
-            self.day_el.append(aday)
-            self.time_el.append(atime)
-            self.tempch1_el.append(float(atempch1))
-            self.tempch2_el.append(float(atempch2))
-            self.tempch3_el.append(float(atempch3))
-            self.tempch4_el.append(float(atempch4))
-            self.azoff_el.append(float(aazoff))
-            self.eloff_el.append(float(aeloff))
-            self.raoff_el.append(float(araoff))
-            self.decoff_el.append(float(adecoff))
+            if len(datum.split()) == 10:
+                aday, atime, atempch1, atempch2, atempch3, atempch4, aazoff, \
+                    aeloff, araoff, adecoff = datum.split()
+                self.day_el.append(aday)
+                self.time_el.append(atime)
+                self.tempch1_el.append(float(atempch1))
+                self.tempch2_el.append(float(atempch2))
+                self.tempch3_el.append(float(atempch3))
+                self.tempch4_el.append(float(atempch4))
+                self.azoff_el.append(float(aazoff))
+                self.eloff_el.append(float(aeloff))
+                self.raoff_el.append(float(araoff))
+                self.decoff_el.append(float(adecoff))
             
     def clear_data(self):
         """Clears the contents of each data field."""

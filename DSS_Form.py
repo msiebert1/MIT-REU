@@ -39,37 +39,37 @@ class DSS_Form():
         
         #scan information labels
         self.source = QtGui.QLabel(self.win)
-        self.source.setText("<body style=\" font-size:10pt;\">""Source: %s" %self.newplot.lines[0].split()[1])
+        self.source.setText("<body style=\" font-size:10pt;\">""Source: %s")
         self.gridLayout.addWidget(self.source, 0, 0, 1, 1)
         self.f = QtGui.QLabel(self.win)
-        self.f.setText("<body style=\" font-size:10pt;\">""Freq: %s" %self.newplot.lines[0].split()[2])
+        self.f.setText("<body style=\" font-size:10pt;\">""Freq: %s" )
         self.gridLayout.addWidget(self.f, 1, 0, 1, 1)
         self.tsys = QtGui.QLabel(self.win)
-        self.tsys.setText("<body style=\" font-size:10pt;\">""Tsys: %s" %self.newplot.lines[0].split()[3])
+        self.tsys.setText("<body style=\" font-size:10pt;\">""Tsys: %s" )
         self.gridLayout.addWidget(self.tsys, 2, 0, 1, 1)
         self.par = QtGui.QLabel(self.win)
-        self.par.setText("<body style=\" font-size:10pt;\">""Parallactic Angle: %s" %self.newplot.lines[0].split()[4])
+        self.par.setText("<body style=\" font-size:10pt;\">""Parallactic Angle: %s" )
         self.gridLayout.addWidget(self.par, 3, 0, 1, 1)
         self.az = QtGui.QLabel(self.win)
-        self.az.setText("<body style=\" font-size:10pt;\">""Az: %s" %self.newplot.lines[0].split()[5])
+        self.az.setText("<body style=\" font-size:10pt;\">""Az: %s" )
         self.gridLayout.addWidget(self.az, 4, 0, 1, 1)
         self.el = QtGui.QLabel(self.win)
-        self.el.setText("<body style=\" font-size:10pt;\">""El: %s" %self.newplot.lines[0].split()[6])
+        self.el.setText("<body style=\" font-size:10pt;\">""El: %s" )
         self.gridLayout.addWidget(self.el, 5, 0, 1, 1)
         self.ra = QtGui.QLabel(self.win)
-        self.ra.setText("<body style=\" font-size:10pt;\">""Ra: %s" %self.newplot.lines[0].split()[7])
+        self.ra.setText("<body style=\" font-size:10pt;\">""Ra: %s" )
         self.gridLayout.addWidget(self.ra, 6, 0, 1, 1)
         self.dec = QtGui.QLabel(self.win)
-        self.dec.setText("<body style=\" font-size:10pt;\">""Dec: %s" %self.newplot.lines[0].split()[8])
+        self.dec.setText("<body style=\" font-size:10pt;\">""Dec: %s" )
         self.gridLayout.addWidget(self.dec, 7, 0, 1, 1)
         self.usr = QtGui.QLabel(self.win)
-        self.usr.setText("<body style=\" font-size:10pt;\">""Usroff: %s" %self.newplot.lines[0].split()[9])
+        self.usr.setText("<body style=\" font-size:10pt;\">""Usroff: %s" )
         self.gridLayout.addWidget(self.usr, 10, 0, 1, 1)
         self.z = QtGui.QLabel(self.win)
-        self.z.setText("<body style=\" font-size:10pt;\">""0.0: %s" %self.newplot.lines[0].split()[10])
+        self.z.setText("<body style=\" font-size:10pt;\">""0.0: %s" )
         self.gridLayout.addWidget(self.z, 11, 0, 1, 1)
         self.eloff = QtGui.QLabel(self.win)
-        self.eloff.setText("<body style=\" font-size:10pt;\">""Eloff: %s" %self.newplot.lines[0].split()[11])
+        self.eloff.setText("<body style=\" font-size:10pt;\">""Eloff: %s" )
         self.gridLayout.addWidget(self.eloff, 12, 0, 1, 1)
         
         #az scan gaussian fit labels
@@ -146,7 +146,7 @@ class DSS_Form():
         """Updates the scan information to be displayed on the left side of the 
         gui. This is useful after the user has changed the scan file.
         """
-        
+
         self.source.setText("<body style=\" font-size:10pt;\">""Source: %s" %self.newplot.lines[0].split()[1])
         self.f.setText("<body style=\" font-size:10pt;\">""Freq: %s" %self.newplot.lines[0].split()[2])
         self.tsys.setText("<body style=\" font-size:10pt;\">""Tsys: %s" %self.newplot.lines[0].split()[3])
@@ -263,12 +263,12 @@ class DSS_Form():
         """
         
         #find the most recent DSS scan
-        self.newplot.livefile = '%s' % max(glob.glob('/tcu/contnm/*'), key=os.path.getctime)
-#        self.newplot.livefile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
+        self.newplot.datafile = '%s' % max(glob.glob('/tcu/contnm/S.2*'), key=os.path.getctime)
+#        self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
         #set title, update scan info, clear existing plots
-        self.win.setWindowTitle('Latest DSS Plot: %s' % self.newplot.livefile)
+        self.win.setWindowTitle('Latest DSS Plot: %s' % self.newplot.datafile)
         self.newplot.clear_data()
-        self.update_labels()
+        
         self.clear_fits()
         
         #plots the available DSS data
@@ -286,6 +286,7 @@ class DSS_Form():
             self.elplot.addItem(curve2)
             
             if self.newplot.scan_complete:
+                self.newplot.create_rawdata(self.newplot.datafile)
                 ax, ay, aoffset, aslope, aamp, apos, awidth, arating = self.newplot.gaussianfit_az()
                 ax2, ay2, aoffset2, aslope2, aamp2, apos2, awidth2, arating2 = self.newplot.gaussianfit_el()
                 self.update_fits(aoffset, aslope, aamp, apos, awidth, arating,
@@ -296,6 +297,7 @@ class DSS_Form():
                 curve4 = pg.PlotCurveItem(x = ax2, y = ay2, pen = 'r')
                 self.elplot.addItem(curve4)
                 timer.stop()
+                self.update_labels()
     
         #connect timer so plot continuously updates   
         timer = QtCore.QTimer()

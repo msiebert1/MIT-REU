@@ -473,6 +473,9 @@ class GUI_Form():
                                % (self.newmap.cmdazpoint) + degree_sign + " %.2f" 
                                % (self.newmap.cmdelpoint) + degree_sign)
         
+        self.azofflabel.setText("<body style=\" font-size:8pt;\">""Az-El Offset: %.2f" 
+                               % (self.newmap.azoff) + degree_sign + " %.2f" 
+                               % (self.newmap.eloff) + degree_sign)
         #read schedule file and display with the current line colored red
         if not self.newmap.skdfile == "N/A":  
             skd = open(self.newmap.skdfile, 'r')
@@ -510,7 +513,14 @@ class GUI_Form():
                         self.newmap.selectedsources.append(source)
         
         #plot the last 100 points of offset data contained in the source map                
-        if self.newmap.togglestrips:                 
+        if self.newmap.togglestrips: 
+            self.azstrip.setRange(yRange=[-.01, .01], padding = 0)     
+            self.elstrip.setRange(yRange=[-.01, .01], padding = 0) 
+            if np.abs(self.newmap.azoff) > .01:
+                self.azstrip.getViewBox().enableAutoRange()
+            if np.abs(self.newmap.eloff) > .01:
+                self.elstrip.getViewBox().enableAutoRange()
+                
             if len(self.newmap.azoffset_data) < 100:
                 azplot = pg.PlotCurveItem(x = self.newmap.striptime, y = self.newmap.azoffset_data)
                 self.azstrip.addItem(azplot)
@@ -548,8 +558,8 @@ class GUI_Form():
         curve = pg.ScatterPlotItem(x = self.newmap.azpoints, y = self.newmap.elpoints, size = 3, 
                                    pen = 'w', brush = 'w', symbol = "o")
         
-        curve.addPoints(x = [self.newmap.cmdazpoint], y = [self.newmap.cmdelpoint], size = 30,
-                        pen = pg.mkPen(color = (0,151,255)), brush = pg.mkBrush(color = (0,0,0)), symbol = "+")                     
+        curve.addPoints(x = [self.newmap.cmdazpoint], y = [self.newmap.cmdelpoint], size = 40,
+                        pen = 'w', brush = pg.mkBrush(color = (0,0,0)), symbol = "+")                     
         curve.addPoints(x = [self.newmap.antazpoint], y = [self.newmap.antelpoint], size = 18, 
                         pen = 'g', brush = 'g', symbol = "+")
         
@@ -564,11 +574,11 @@ class GUI_Form():
                                     y = [self.newmap.cmdelpoint, self.newmap.cmdelpoint], 
                                     pen= pg.mkPen(color = (0,151,255)))
         self.p.addItem(cmdtick2)
-        if -180 <= self.newmap.wrappoint <= 180:
+        if 0 <= self.newmap.wrappoint <= 2*np.pi:
             anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
                                     y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'g')
             self.p.addItem(anttick)
-        elif self.newmap.wrappoint > 180:
+        elif self.newmap.wrappoint > 2*np.pi:
             anttick = pg.PlotCurveItem(x = [self.newmap.antazpoint, self.newmap.antazpoint], 
                                     y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'y')
             self.p.addItem(anttick)
@@ -583,7 +593,7 @@ class GUI_Form():
                                     y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'y')
             self.p.addItem(anttick)
             wraplabel = pg.TextItem(text = "CCW", color = 'y')
-            wraplabel.setPos(self.newmap.antazpoint, self.p.viewRange()[1][0]+azticksize)
+            wraplabel.setPos(self.newmap.antazpoint-12, self.p.viewRange()[1][0]+azticksize)
             self.p.addItem(wraplabel)
             wraptick = pg.PlotCurveItem(x = [258, 258], 
                                     y = [self.p.viewRange()[1][0],self.p.viewRange()[1][0]+azticksize], pen= 'r')
@@ -626,9 +636,6 @@ class GUI_Form():
                                % (self.newmap.tarazpoint) + degree_sign)
             self.tarellabel.setText(" Target El: %.2f" 
                                % (self.newmap.tarelpoint) + degree_sign)
-            self.azofflabel.setText("<body style=\" font-size:8pt;\">""Az-El Offset: %.2f" 
-                               % (self.newmap.azoff) + degree_sign + " %.2f" 
-                               % (self.newmap.eloff) + degree_sign)
         else:
             self.tarazlabel.setText(" Target Az: ")
             self.tarellabel.setText(" Target El: ")

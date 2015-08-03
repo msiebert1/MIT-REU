@@ -7,7 +7,7 @@ Created on Tue Jun 23 14:42:12 2015
 
 import numpy as np
 import datetime
-from tail import tail
+from tail import tail, tail_unix
 from novas import compat as novas
 from novas.compat import eph_manager
 from pyqtgraph.Qt import QtGui, QtCore
@@ -387,12 +387,14 @@ class SourceMap():
         This will eventually process a message instead of a file.
         """
         
-        thefile = open('/home/msiebert/Documents/MIT_REU/tailfile.ant', 'r')
-        line = tail(thefile, lines = 1)
+        cmdfile = open('/tcu/rt/acu-cmd', 'r')
+        cmdlines = tail(cmdfile, lines = 36)
         
-#        self.target = "3C111"
+        statfile = open('/tcu/rt/acu-status', 'r')
+        antlines = tail(statfile, lines = 14)
+
         #target source
-        self.target = line.split()[4]
+#        self.target = line.split()[4]
         self.tarsource = ""
         
         #find the target in the source list and determine the ra and dec
@@ -407,26 +409,31 @@ class SourceMap():
         else:       
             self.target, self.tarazpoint, self.tarelpoint = \
                                       self.get_source_coords(self.tarsource)
-#        self.cmdazpoint = 260
-#        self.cmdelpoint = 70
-#        self.antazpoint = self.antazpoint + .125
-#        self.antelpoint = self.antelpoint + .125/10
-#        self.antazpoint = self.antazpoint%360
-#        self.antelpoint = self.antelpoint%90
-                                     
-        #acquire antenna status information
-        self.cmdazpoint = float(line.split()[0])
-        self.cmdelpoint = float(line.split()[1])
-        self.antazpoint = float(line.split()[2])
-        self.antelpoint = float(line.split()[3])
-        self.skdfile = line.split()[5]
-        self.skdline = int(line.split()[6])
-        self.wrappoint = 80
+                                      
+        self.cmdazpoint = float(cmdlines.split()[21])*(180/np.pi)
+
+        if self.cmdazpoint < 0:
+            self.cmdazpoint = 360 + self.cmdazpoint
+        elif self.cmdazpoint > 360:
+            self.cmdazpoint = self.cmdazpoint - 360
+        
+        self.cmdelpoint = float(cmdlines.split()[30])*(180/np.pi)
+        
+        self.antazpoint = float(antlines.split()[21])*(180/np.pi)
+        if self.antazpoint < 0:
+            self.antazpoint = 360 + self.antazpoint
+        elif self.antazpoint > 360:
+            self.antazpoint = self.antazpoint - 360
+        
+        self.antelpoint = float(antlines.split()[33])*(180/np.pi)
+        
+        self.skdfile = "N/A"
+        self.wrappoint = float(antlines.split()[21])
         
         #calculate the offsets in antenna position
         self.azoff = self.antazpoint - self.cmdazpoint
         self.eloff = self.antelpoint - self.cmdelpoint
-        
+
     def update_strips(self):
          """Called after update_antenna therefore it updates the strip chart 
          data with latest offset data.
