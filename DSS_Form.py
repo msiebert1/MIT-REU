@@ -16,17 +16,15 @@ class DSS_Form():
     application.
     """
     
-    def __init__(self, newplot, newestData):
+    def __init__(self, newplot):
         """Creates and lays out the widgets to be used in the gui. The contents
         of many of the widgets are changed as the application is running.
         """
         
         self.newplot = newplot
-        self.newestData = newestData
         
         #main window      
         self.win = QtGui.QWidget()
-        self.win.setWindowTitle('DSS Plot: %s' % self.newestData)
         self.win.setWindowIcon(QtGui.QIcon('/home/msiebert/Documents/MIT_REU/37m_GUI/Haystack_Icon.gif'))
         self.win.resize(800,500)
         self.gridLayout = QtGui.QGridLayout(self.win)
@@ -39,38 +37,35 @@ class DSS_Form():
         
         #scan information labels
         self.source = QtGui.QLabel(self.win)
-        self.source.setText("<body style=\" font-size:10pt;\">""Source: %s")
+        self.source.setText("<body style=\" font-size:10pt;\">""Source: ")
         self.gridLayout.addWidget(self.source, 0, 0, 1, 1)
         self.f = QtGui.QLabel(self.win)
-        self.f.setText("<body style=\" font-size:10pt;\">""Freq: %s" )
+        self.f.setText("<body style=\" font-size:10pt;\">""Freq: " )
         self.gridLayout.addWidget(self.f, 1, 0, 1, 1)
         self.tsys = QtGui.QLabel(self.win)
-        self.tsys.setText("<body style=\" font-size:10pt;\">""Tsys: %s" )
+        self.tsys.setText("<body style=\" font-size:10pt;\">""Tsys: " )
         self.gridLayout.addWidget(self.tsys, 2, 0, 1, 1)
         self.par = QtGui.QLabel(self.win)
-        self.par.setText("<body style=\" font-size:10pt;\">""Parallactic Angle: %s" )
+        self.par.setText("<body style=\" font-size:10pt;\">""Parallactic Angle: " )
         self.gridLayout.addWidget(self.par, 3, 0, 1, 1)
         self.az = QtGui.QLabel(self.win)
-        self.az.setText("<body style=\" font-size:10pt;\">""Az: %s" )
+        self.az.setText("<body style=\" font-size:10pt;\">""Az: " )
         self.gridLayout.addWidget(self.az, 4, 0, 1, 1)
         self.el = QtGui.QLabel(self.win)
-        self.el.setText("<body style=\" font-size:10pt;\">""El: %s" )
+        self.el.setText("<body style=\" font-size:10pt;\">""El: " )
         self.gridLayout.addWidget(self.el, 5, 0, 1, 1)
         self.ra = QtGui.QLabel(self.win)
-        self.ra.setText("<body style=\" font-size:10pt;\">""Ra: %s" )
+        self.ra.setText("<body style=\" font-size:10pt;\">""Ra: " )
         self.gridLayout.addWidget(self.ra, 6, 0, 1, 1)
         self.dec = QtGui.QLabel(self.win)
-        self.dec.setText("<body style=\" font-size:10pt;\">""Dec: %s" )
+        self.dec.setText("<body style=\" font-size:10pt;\">""Dec: " )
         self.gridLayout.addWidget(self.dec, 7, 0, 1, 1)
-        self.usr = QtGui.QLabel(self.win)
-        self.usr.setText("<body style=\" font-size:10pt;\">""Usroff: %s" )
-        self.gridLayout.addWidget(self.usr, 10, 0, 1, 1)
-        self.z = QtGui.QLabel(self.win)
-        self.z.setText("<body style=\" font-size:10pt;\">""0.0: %s" )
-        self.gridLayout.addWidget(self.z, 11, 0, 1, 1)
+        self.azoff = QtGui.QLabel(self.win)
+        self.azoff.setText("<body style=\" font-size:10pt;\">""Azoff: " )
+        self.gridLayout.addWidget(self.azoff, 10, 0, 1, 1)
         self.eloff = QtGui.QLabel(self.win)
-        self.eloff.setText("<body style=\" font-size:10pt;\">""Eloff: %s" )
-        self.gridLayout.addWidget(self.eloff, 12, 0, 1, 1)
+        self.eloff.setText("<body style=\" font-size:10pt;\">""Eloff: " )
+        self.gridLayout.addWidget(self.eloff, 11, 0, 1, 1)
         
         #az scan gaussian fit labels
         self.fit = QtGui.QLabel(self.win)
@@ -121,7 +116,7 @@ class DSS_Form():
         self.posi2.setText("<body style=\" font-size:10pt;\">""Position: ")
         self.gridLayout.addWidget(self.posi2, 16, 7, 1, 1)
         self.wid2 = QtGui.QLabel(self.win)
-        self.wid2.setText("<body style=\" font-size:10pt;\">""Width: %f" )
+        self.wid2.setText("<body style=\" font-size:10pt;\">""Width: " )
         self.gridLayout.addWidget(self.wid2, 17, 7, 1, 1)
         
         #button to plot specific DSS
@@ -155,8 +150,7 @@ class DSS_Form():
         self.el.setText("<body style=\" font-size:10pt;\">""El: %s" %self.newplot.lines[0].split()[6])
         self.ra.setText("<body style=\" font-size:10pt;\">""Ra: %s" %self.newplot.lines[0].split()[7])
         self.dec.setText("<body style=\" font-size:10pt;\">""Dec: %s" %self.newplot.lines[0].split()[8])
-        self.usr.setText("<body style=\" font-size:10pt;\">""Usroff: %s" %self.newplot.lines[0].split()[9])
-        self.z.setText("<body style=\" font-size:10pt;\">""0.0: %s" %self.newplot.lines[0].split()[10])
+        self.azoff.setText("<body style=\" font-size:10pt;\">""Azoff: %s" %self.newplot.lines[0].split()[9])
         self.eloff.setText("<body style=\" font-size:10pt;\">""Eloff: %s" %self.newplot.lines[0].split()[11])
     
     def update_fits(self, offset, slope, amp, pos, width, rating,
@@ -263,8 +257,8 @@ class DSS_Form():
         """
         
         #find the most recent DSS scan
-        self.newplot.datafile = '%s' % max(glob.glob('/tcu/contnm/S.2*'), key=os.path.getctime)
-#        self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
+#        self.newplot.datafile = '%s' % max(glob.glob('/tcu/contnm/S.2*'), key=os.path.getctime)
+        self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
         #set title, update scan info, clear existing plots
         self.win.setWindowTitle('Latest DSS Plot: %s' % self.newplot.datafile)
         self.newplot.clear_data()
@@ -286,6 +280,7 @@ class DSS_Form():
             self.elplot.addItem(curve2)
             
             if self.newplot.scan_complete:
+                print "here"
                 self.newplot.create_rawdata(self.newplot.datafile)
                 ax, ay, aoffset, aslope, aamp, apos, awidth, arating = self.newplot.gaussianfit_az()
                 ax2, ay2, aoffset2, aslope2, aamp2, apos2, awidth2, arating2 = self.newplot.gaussianfit_el()
@@ -296,8 +291,12 @@ class DSS_Form():
             
                 curve4 = pg.PlotCurveItem(x = ax2, y = ay2, pen = 'r')
                 self.elplot.addItem(curve4)
-                timer.stop()
                 self.update_labels()
+                timer.stop()
+                if not self.newplot.datafile == '%s' % max(glob.glob('*.dss'), key=os.path.getctime):
+                    print "here"
+                    self.newplot.clear_data()
+                    self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
     
         #connect timer so plot continuously updates   
         timer = QtCore.QTimer()

@@ -7,7 +7,7 @@ Created on Tue Jun 23 14:42:12 2015
 
 import numpy as np
 import datetime
-from tail import tail, tail_unix
+from tail import tail
 from novas import compat as novas
 from novas.compat import eph_manager
 from pyqtgraph.Qt import QtGui, QtCore
@@ -45,7 +45,7 @@ class SourceMap():
         
         #fields to contain coordinate data of clicked source
         self.toggletrack = False
-        self.clicksource = "None"
+        self.clicksource = ""
         self.clickazpoint = ''
         self.clickelpoint = ''
         self.clickazpoints = []
@@ -71,7 +71,10 @@ class SourceMap():
         self.ephem_colors = []
         
         #fields to contain coordinate data of the antenna and target source
+        self.toggletrack_ant = False
         self.antazpoint = 181
+        self.antazpoints = []
+        self.antelpoints = []
         self.antelpoint = 45
         self.cmdazpoint = 0
         self.cmdelpoint = 0
@@ -80,10 +83,30 @@ class SourceMap():
         self.wrappoint = 0
         self.azoff = 0
         self.eloff = 0
+        self.usr_offs = ''
         self.azoffset_data = [0]
         self.eloffset_data = [0]
         self.striptime = [0]
         self.togglestrips = False
+        
+        self.azbias1 = ''
+        self.azbias2 = ''
+        self.elbias = '' 
+        
+        self.subdx = ''
+        self.subdy = ''
+        self.subdz = ''
+        self.subdpx = ''
+        self.subdpy = ''
+        
+        self.deltdt = ''
+        self.dut1 = ''
+        self.deltat = ''
+        
+        self.tdk = ''
+        self.dewpt = ''
+        self.rh = ''
+        self.pmb = ''
         
         self.target = ''
         self.tarsource = ''
@@ -91,6 +114,7 @@ class SourceMap():
         self.tardec = ''
         self.tarazpoint = ''
         self.tarelpoint = ''
+        self.onsource = ''
         
         #fields useful for gui application
         self.namelist = []
@@ -392,9 +416,14 @@ class SourceMap():
         
         statfile = open('/tcu/rt/acu-status', 'r')
         antlines = tail(statfile, lines = 14)
-
+        
+        stat2file = open('/tcu/rt/status', 'r')
+        stats = tail(stat2file, lines = 108)
+        statlines = stats.split('\n')
+        
         #target source
-#        self.target = line.split()[4]
+        if len (statlines[6]) == 3:
+            self.target = statlines[6].split()[2]
         self.tarsource = ""
         
         #find the target in the source list and determine the ra and dec
@@ -414,6 +443,7 @@ class SourceMap():
 
         if self.cmdazpoint < 0:
             self.cmdazpoint = 360 + self.cmdazpoint
+                
         elif self.cmdazpoint > 360:
             self.cmdazpoint = self.cmdazpoint - 360
         
@@ -427,12 +457,40 @@ class SourceMap():
         
         self.antelpoint = float(antlines.split()[33])*(180/np.pi)
         
-        self.skdfile = "N/A"
+        if self.toggletrack_ant:
+            self.antazpoints.append(self.antazpoint)
+            self.antelpoints.append(self.antelpoint)
+            
+        self.skdfile = statlines[48].split()[2]
+        self.skdline = statlines[49].split()[2]
         self.wrappoint = float(antlines.split()[21])
         
         #calculate the offsets in antenna position
         self.azoff = self.antazpoint - self.cmdazpoint
         self.eloff = self.antelpoint - self.cmdelpoint
+        self.usr_offs = statlines[31].split()[3] + " " + statlines[31].split()[4]
+        
+        self.onsource = statlines[59].split()[2]
+        
+        #obtain various status information
+        self.azbias1 = statlines[65].split()[2]
+        self.azbias2 = statlines[66].split()[2]
+        self.elbias = statlines[67].split()[2]
+        
+        self.subdx = statlines[76].split()[2]
+        self.subdy = statlines[77].split()[2]
+        self.subdz = statlines[78].split()[2]
+        self.subdpx = statlines[79].split()[2]
+        self.subdpy = statlines[80].split()[2]
+        
+        self.deltdt = statlines[61].split()[2]
+        self.dut1 = statlines[62].split()[2]
+        self.deltat = statlines[63].split()[2]
+        
+        self.tdk = statlines[71].split()[2] + " " + statlines[71].split()[3]
+        self.dewpt = statlines[72].split()[2] + " " + statlines[72].split()[3]
+        self.rh = statlines[73].split()[2] 
+        self.pmb = statlines[74].split()[2] + " " + statlines[74].split()[3]
 
     def update_strips(self):
          """Called after update_antenna therefore it updates the strip chart 

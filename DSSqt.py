@@ -126,6 +126,7 @@ class DSSqt():
         """
         
         #read datafile lines and clears the data from the last animation call
+        self.scan_complete = False
         self.lines = []
         thefile = open(self.datafile, 'r')
         self.lines = thefile.readlines()
@@ -309,12 +310,10 @@ if __name__ == '__main__':
     #create application, set up the plot data            
     app = app = QtGui.QApplication([])
     app.setGraphicsSystem('raster') 
-    newestData = '%s' % max(glob.glob('/tcu/contnm/*'), key=os.path.getctime)
     newplot = DSSqt()
-    newplot.create_rawdata(newestData)  
     
     #layout the gui
-    gui = DSS_Form(newplot, newestData)
+    gui = DSS_Form(newplot)
     
     #plot the latest DSS in the gui
     gui.latest_live_dss()
