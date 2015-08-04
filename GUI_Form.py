@@ -28,7 +28,7 @@ class GUI_Form():
         self.win = QtGui.QWidget()
         self.win.setWindowTitle('Radio Source Sky Map: Haystack Observatory')
         self.win.setWindowIcon(QtGui.QIcon('/home/msiebert/Documents/MIT_REU/37m_GUI/Haystack_Icon.gif'))
-        self.win.resize(1730,700)
+        self.win.resize(1620,700)
         self.gridLayout = QtGui.QGridLayout(self.win)
         
         #main plot and strip charts
@@ -37,7 +37,7 @@ class GUI_Form():
         self.elstrip = pg.PlotWidget(self.win)
         
         #set up the general layout
-        self.gridLayout.addWidget(self.plot, 0, 1, 15, 8)
+        self.gridLayout.addWidget(self.plot, 0, 1, 15, 7)
         self.gridLayout.addWidget(self.azstrip, 18, 1, 4, 2)
         self.gridLayout.addWidget(self.elstrip, 18, 3, 4, 2)
         self.gridLayout.setColumnStretch(0,0)
@@ -74,7 +74,7 @@ class GUI_Form():
         self.menu.addAction('Add Object', self.add)
         self.menu.addAction('Remove Objects', self.remove)
         self.menubut.setMenu(self.menu)
-        self.gridLayout.addWidget(self.menubut, 0, 9, 1, 1)
+        self.gridLayout.addWidget(self.menubut, 0, 8, 1, 1)
         
         #list of sources for user to choose from 
         self.sourcetable = pg.TreeWidget(self.win)
@@ -97,14 +97,14 @@ class GUI_Form():
         #spinbox for user to change the speed of the timelapse
         self.spdlabel = QtGui.QLabel(self.win)
         self.spdlabel.setText("<body style=\" font-size:8pt;\">""Time-lapse Speed (0 = Live):")
-        self.gridLayout.addWidget(self.spdlabel, 5, 9, 1, 1)
+        self.gridLayout.addWidget(self.spdlabel, 5, 8, 1, 1)
         self.spdspin = pg.SpinBox(value=0, int=True, minStep=1, step=1)
-        self.gridLayout.addWidget(self.spdspin, 6, 9, 1, 1)
+        self.gridLayout.addWidget(self.spdspin, 6, 8, 1, 1)
         
         #frames per second label in order to see performance
         self.fpslabel = QtGui.QLabel(self.win)
         self.fpslabel.setText("")
-        self.gridLayout.addWidget(self.fpslabel, 22, 9, 1, 1)
+        self.gridLayout.addWidget(self.fpslabel, 22, 8, 1, 1)
         
         #labels for az, el, ra, dec of source/antenna/target
         self.clicklabel = QtGui.QLabel(self.win)
@@ -125,16 +125,16 @@ class GUI_Form():
         
         self.antlabel = QtGui.QLabel(self.win)
         self.antlabel.setText("<body style=\" font-size:12pt;\">""Sky Map Information:")
-        self.gridLayout.addWidget(self.antlabel, 1, 9, 1, 1)
+        self.gridLayout.addWidget(self.antlabel, 1, 8, 1, 1)
         self.pauselabel = QtGui.QLabel(self.win)
         self.pauselabel.setText("<body style=\" font-size:8pt;\">""Paused: NO")
-        self.gridLayout.addWidget(self.pauselabel, 2, 9, 1, 1)
+        self.gridLayout.addWidget(self.pauselabel, 2, 8, 1, 1)
         self.tracklabel = QtGui.QLabel(self.win)
         self.tracklabel.setText("<body style=\" font-size:8pt;\">""Source Tracking: OFF")
-        self.gridLayout.addWidget(self.tracklabel, 3, 9, 1, 1)
+        self.gridLayout.addWidget(self.tracklabel, 3, 8, 1, 1)
         self.track2label = QtGui.QLabel(self.win)
         self.track2label.setText("<body style=\" font-size:8pt;\">""Antenna Tracking: OFF")
-        self.gridLayout.addWidget(self.track2label, 4, 9, 1, 1)
+        self.gridLayout.addWidget(self.track2label, 4, 8, 1, 1)
         
         
         self.cmdazlabel = QtGui.QLabel(self.win)
@@ -263,7 +263,7 @@ class GUI_Form():
             
         self.skdtext.setFont(QtGui.QFont ("Arial", 8))
         self.skdtext.setReadOnly(True)
-        self.gridLayout.addWidget(self.skdtext, 11, 9, 4, 1)
+        self.gridLayout.addWidget(self.skdtext, 11, 8, 4, 1)
         
         #set range and labels of axes
         self.p = self.plot

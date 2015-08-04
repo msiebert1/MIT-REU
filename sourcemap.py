@@ -156,7 +156,7 @@ class SourceMap():
         self.jd_tt = novas.julian_date(time.year, time.month, time.day, self.uthrs)
         
         gst = novas.sidereal_time(int(self.jd_tt), self.jd_tt%1, 68)
-        self.LST = gst - 71.488210/15
+        self.LST = gst - (71.488210/15)*.9972695666
         if self.LST < 0:
             self.LST = 23.934444444 + self.LST
         
