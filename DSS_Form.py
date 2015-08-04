@@ -257,8 +257,8 @@ class DSS_Form():
         """
         
         #find the most recent DSS scan
-#        self.newplot.datafile = '%s' % max(glob.glob('/tcu/contnm/S.2*'), key=os.path.getctime)
-        self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
+        self.newplot.datafile = '%s' % max(glob.glob('/tcu/contnm/S.2*'), key=os.path.getctime)
+#        self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
         #set title, update scan info, clear existing plots
         self.win.setWindowTitle('Latest DSS Plot: %s' % self.newplot.datafile)
         self.newplot.clear_data()
@@ -280,7 +280,6 @@ class DSS_Form():
             self.elplot.addItem(curve2)
             
             if self.newplot.scan_complete:
-                print "here"
                 self.newplot.create_rawdata(self.newplot.datafile)
                 ax, ay, aoffset, aslope, aamp, apos, awidth, arating = self.newplot.gaussianfit_az()
                 ax2, ay2, aoffset2, aslope2, aamp2, apos2, awidth2, arating2 = self.newplot.gaussianfit_el()
@@ -293,10 +292,7 @@ class DSS_Form():
                 self.elplot.addItem(curve4)
                 self.update_labels()
                 timer.stop()
-                if not self.newplot.datafile == '%s' % max(glob.glob('*.dss'), key=os.path.getctime):
-                    print "here"
-                    self.newplot.clear_data()
-                    self.newplot.datafile = '%s' % max(glob.glob('*.dss'), key=os.path.getctime)
+
     
         #connect timer so plot continuously updates   
         timer = QtCore.QTimer()

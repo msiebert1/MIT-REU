@@ -51,13 +51,8 @@ class GUI_Form():
         self.gridLayout.setColumnStretch(4,1)
         self.gridLayout.setColumnMinimumWidth(4,200)
         
-        self.border = QtGui.QFrame(self.win)
-        self.border.setFrameStyle(0x0006)
-        self.gridLayout.addWidget(self.border, 16, 1, 2, 2)
-        
-        self.border2 = QtGui.QFrame(self.win)
-        self.border2.setFrameStyle(0x0006)
-        self.gridLayout.addWidget(self.border2, 16, 3, 2, 2)
+#        self.clickinfo = QtGui.QComboBox(self.win)
+#        self.gridLayout.addWidget(self.clickinfo, 25, 0, 1, 1)
         
         self.menubut = QtGui.QPushButton('Menu')
         self.menu = QtGui.QMenu()
@@ -92,7 +87,7 @@ class GUI_Form():
                 i.addChild(dec)
         self.sourcetable.sortItems(0, 0) 
         self.sourcetable.headerItem().setText(0, "Sources (J2000)")
-        self.gridLayout.addWidget(self.sourcetable, 0, 0, 22, 1)
+        self.gridLayout.addWidget(self.sourcetable, 1, 0, 21, 1)
         
         #spinbox for user to change the speed of the timelapse
         self.spdlabel = QtGui.QLabel(self.win)
@@ -104,7 +99,7 @@ class GUI_Form():
         #frames per second label in order to see performance
         self.fpslabel = QtGui.QLabel(self.win)
         self.fpslabel.setText("")
-        self.gridLayout.addWidget(self.fpslabel, 22, 8, 1, 1)
+        self.gridLayout.addWidget(self.fpslabel, 22, 0, 1, 1)
         
         #labels for az, el, ra, dec of source/antenna/target
         self.clicklabel = QtGui.QLabel(self.win)
@@ -142,13 +137,13 @@ class GUI_Form():
         self.gridLayout.addWidget(self.cmdazlabel, 22, 1, 1, 1)
         self.actazlabel = QtGui.QLabel(self.win)
         self.actazlabel.setText("<body style=\" color: green;\">""Actual Az-El: 00.00 00.00")
-        self.gridLayout.addWidget(self.actazlabel, 22, 2, 1, 1)
+        self.gridLayout.addWidget(self.actazlabel, 23, 1, 1, 1)
         self.azofflabel = QtGui.QLabel(self.win)
         self.azofflabel.setText("Az-El Offset: 00.00 00.00")
-        self.gridLayout.addWidget(self.azofflabel, 22, 3, 1, 1)
+        self.gridLayout.addWidget(self.azofflabel, 24, 1, 1, 1)
         self.usrofflabel = QtGui.QLabel(self.win)
         self.usrofflabel.setText("Usr Offset: 00.00 00.00")
-        self.gridLayout.addWidget(self.usrofflabel, 22, 4, 1, 1)
+        self.gridLayout.addWidget(self.usrofflabel, 22, 2, 1, 1)
         
         self.targetlabel = QtGui.QLabel(self.win)
         self.targetlabel.setText("<body style=\" color: red;\">""Target Source: ")
@@ -230,12 +225,74 @@ class GUI_Form():
         self.pmblabel.setText("pmb: ")
         self.gridLayout.addWidget(self.pmblabel, 19, 8, 1, 1)
         
-#        self.pbar = QtGui.QProgressBar(self.win)
-#        self.gridLayout.addWidget(self.pbar, 14, 9, 1, 1)
-#        self.pbar.setMinimum(0)
-#        self.pbar.setMaximum(10)
-#        self.pbar.setValue(1)
-#        self.pbar.hide()
+        self.skinfolabel = QtGui.QLabel(self.win)
+        self.skinfolabel.setText("<body style=\" font-size:12pt;\">""Schedule Information: ")
+        self.gridLayout.addWidget(self.skinfolabel, 7, 8, 1, 1)
+        self.intlabel = QtGui.QLabel(self.win)
+        self.intlabel.setText("<body style=\" font-size:8pt;\">""int time: ")
+        self.gridLayout.addWidget(self.intlabel, 8, 8, 1, 1)
+        self.npairlabel = QtGui.QLabel(self.win)
+        self.npairlabel.setText("<body style=\" font-size:8pt;\">""npairs: ")
+        self.gridLayout.addWidget(self.npairlabel, 9, 8, 1, 1)
+        self.npointlabel = QtGui.QLabel(self.win)
+        self.npointlabel.setText("<body style=\" font-size:8pt;\">""npoints: ")
+        self.gridLayout.addWidget(self.npointlabel, 10, 8, 1, 1)
+        self.durlabel = QtGui.QLabel(self.win)
+        self.durlabel.setText("<body style=\" font-size:8pt;\">""duration: ")
+        self.gridLayout.addWidget(self.durlabel, 11, 8, 1, 1)
+        
+        self.swinfolabel = QtGui.QLabel(self.win)
+        self.swinfolabel.setText("<body style=\" font-size:12pt;\">""Switcher Info: ")
+        self.gridLayout.addWidget(self.swinfolabel, 21, 5, 1, 1)
+        self.freqlabel = QtGui.QLabel(self.win)
+        self.freqlabel.setText("Frequency: ")
+        self.gridLayout.addWidget(self.freqlabel, 22, 5, 1, 1)
+        self.reclabel = QtGui.QLabel(self.win)
+        self.reclabel.setText("Receiver: ")
+        self.gridLayout.addWidget(self.reclabel, 23, 5, 1, 1)
+        self.bswlabel = QtGui.QLabel(self.win)
+        self.bswlabel.setText("bsw status: ")
+        self.gridLayout.addWidget(self.bswlabel, 24, 5, 1, 1)
+        self.dfreqlabel = QtGui.QLabel(self.win)
+        self.dfreqlabel.setText("dicke freq: ")
+        self.gridLayout.addWidget(self.dfreqlabel, 25, 5, 1, 1)
+        self.dbllabel = QtGui.QLabel(self.win)
+        self.dbllabel.setText("dicke bl: ")
+        self.gridLayout.addWidget(self.dbllabel, 22, 6, 1, 1)
+        self.fswlabel = QtGui.QLabel(self.win)
+        self.fswlabel.setText("freq switch: ")
+        self.gridLayout.addWidget(self.fswlabel, 23, 6, 1, 1)
+        self.foffslabel = QtGui.QLabel(self.win)
+        self.foffslabel.setText("freq soffs: ")
+        self.gridLayout.addWidget(self.foffslabel, 24, 6, 1, 1)
+        
+        self.swinfolabel = QtGui.QLabel(self.win)
+        self.swinfolabel.setText("<body style=\" font-size:12pt;\">""Other Info: ")
+        self.gridLayout.addWidget(self.swinfolabel, 21, 7, 1, 1)
+        self.vclabel = QtGui.QLabel(self.win)
+        self.vclabel.setText("vc offset: ")
+        self.gridLayout.addWidget(self.vclabel, 22, 7, 1, 1)
+        self.ifofflabel = QtGui.QLabel(self.win)
+        self.ifofflabel.setText("if off: ")
+        self.gridLayout.addWidget(self.ifofflabel, 23, 7, 1, 1)
+        self.ifoffalabel = QtGui.QLabel(self.win)
+        self.ifoffalabel.setText("if offa: ")
+        self.gridLayout.addWidget(self.ifoffalabel, 24, 7, 1, 1)
+        self.radecofflabel = QtGui.QLabel(self.win)
+        self.radecofflabel.setText("ra dec off: ")
+        self.gridLayout.addWidget(self.radecofflabel, 25, 7, 1, 1)
+        self.azellabel = QtGui.QLabel(self.win)
+        self.azellabel.setText("azel: ")
+        self.gridLayout.addWidget(self.azellabel, 22, 8, 1, 1)
+        self.callabel = QtGui.QLabel(self.win)
+        self.callabel.setText("cal: ")
+        self.gridLayout.addWidget(self.callabel, 23, 8, 1, 1)
+        self.lorflabel = QtGui.QLabel(self.win)
+        self.lorflabel.setText("lorf: ")
+        self.gridLayout.addWidget(self.lorflabel, 24, 8, 1, 1)
+        self.lomullabel = QtGui.QLabel(self.win)
+        self.lomullabel.setText("lo mul: ")
+        self.gridLayout.addWidget(self.lomullabel, 25, 8, 1, 1)
         
         #read schedule file and display with the current line colored red
         self.skdtext = QtGui.QTextEdit()
@@ -263,7 +320,7 @@ class GUI_Form():
             
         self.skdtext.setFont(QtGui.QFont ("Arial", 8))
         self.skdtext.setReadOnly(True)
-        self.gridLayout.addWidget(self.skdtext, 11, 8, 4, 1)
+        self.gridLayout.addWidget(self.skdtext, 12, 8, 3, 1)
         
         #set range and labels of axes
         self.p = self.plot
@@ -280,7 +337,7 @@ class GUI_Form():
         
         #button to clear selected sources
         self.clearselbut = QtGui.QPushButton("Clear")
-        self.gridLayout.addWidget(self.clearselbut, 22, 0, 1, 1)
+        self.gridLayout.addWidget(self.clearselbut, 0, 0, 1, 1)
         self.clearselbut.clicked.connect(self.clear_selsources)
         
         self.win.show()
@@ -447,7 +504,7 @@ class GUI_Form():
         import os
         python = sys.executable
         os.execl(python, python, * sys.argv)
-    
+        
     def mouseClicked(self, evt):
         """Determines whether or not the user clicked on a source and updates the
         plot accordingly.
@@ -541,6 +598,28 @@ class GUI_Form():
         self.dewptlabel.setText("dewpt: %s" % self.newmap.dewpt)
         self.rhlabel.setText("rh: %s" % self.newmap.rh)
         self.pmblabel.setText("pmb: %s" % self.newmap.pmb)
+        
+        self.intlabel.setText("<body style=\" font-size:8pt;\">""int time: %s" % self.newmap.inttime)
+        self.npairlabel.setText("<body style=\" font-size:8pt;\">""npairs: %s" % self.newmap.npairs)
+        self.npointlabel.setText("<body style=\" font-size:8pt;\">""npoints: %s" % self.newmap.npoints)
+        self.durlabel.setText("<body style=\" font-size:8pt;\">""duration: %s" % self.newmap.duration)
+        
+        self.freqlabel.setText("frequency: %s" % self.newmap.freq)
+        self.reclabel.setText("receiver: %s" % self.newmap.rec)
+        self.bswlabel.setText("bsw status: %s" % self.newmap.bsw)
+        self.dfreqlabel.setText("dicke freq: %s" % self.newmap.dfreq)
+        self.dbllabel.setText("dicke bl: %s" % self.newmap.dbl)
+        self.fswlabel.setText("freq switch: %s" % self.newmap.fsw)
+        self.foffslabel.setText("freq soffs: %s" % self.newmap.foffs)
+        
+        self.vclabel.setText("vc offset: %s" % self.newmap.vc)
+        self.ifofflabel.setText("if off: %s" % self.newmap.ifoff)
+        self.ifoffalabel.setText("ifoffa: %s" % self.newmap.ifoffa)
+        self.radecofflabel.setText("ra dec off: %s" % self.newmap.radecoff)
+        self.azellabel.setText("azel: %s" % self.newmap.azel)
+        self.callabel.setText("cal: %s" % self.newmap.cal)
+        self.lorflabel.setText("lorf: %s" % self.newmap.lorf)
+        self.lomullabel.setText("lo mul: %s" % self.newmap.lomult)
         
         #read schedule file and display with the current line colored red
         if not self.newmap.skdfile == "(null)":  

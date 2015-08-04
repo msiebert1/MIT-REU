@@ -116,6 +116,28 @@ class SourceMap():
         self.tarelpoint = ''
         self.onsource = ''
         
+        self.inttime = ''
+        self.npairs = ''
+        self.npoints = ''
+        self.duration = ''
+        
+        self.freq = ''
+        self.rec = ''
+        self.bsw = ''
+        self.dfreq = ''
+        self.dbl = ''
+        self.fsw = ''
+        self.foffs = ''
+        
+        self.vc = ''
+        self.ifoff = ''
+        self.ifoffa = ''
+        self.radecoff = ''
+        self.azel = ''
+        self.cal = ''
+        self.lorf = ''
+        self.lomult = ''
+        
         #fields useful for gui application
         self.namelist = []
         self.allsources = []
@@ -491,7 +513,29 @@ class SourceMap():
         self.dewpt = statlines[72].split()[2] + " " + statlines[72].split()[3]
         self.rh = statlines[73].split()[2] 
         self.pmb = statlines[74].split()[2] + " " + statlines[74].split()[3]
-
+        
+        self.inttime = statlines[13].split()[3]
+        self.npairs = statlines[14].split()[2]
+        self.npoints = statlines[15].split()[2]
+        self.duration = statlines[16].split()[2]
+        
+        self.freq = statlines[3].split()[2]
+        self.rec = statlines[4].split()[2]
+        self.bsw = statlines[17].split()[3]
+        self.dfreq = statlines[45].split()[3]
+        self.dbl = statlines[46].split()[3]
+        self.fsw = statlines[19].split()[3]
+        self.foffs = statlines[20].split()[3] + " " + statlines[20].split()[4] + " " +statlines[20].split()[5]
+        
+        self.vc = statlines[23].split()[3] + " " + statlines[23].split()[4] + " " + statlines[23].split()[5] + " " + statlines[23].split()[6]
+        self.ifoff = statlines[24].split()[3]
+        self.ifoffa = statlines[25].split()[3]
+        self.radecoff = statlines[26].split()[4] + " " + statlines[26].split()[5] + " " + statlines[26].split()[6]
+        self.azel = statlines[27].split()[2] + " " + statlines[27].split()[3]
+        self.cal = statlines[28].split()[2] 
+        self.lorf = statlines[29].split()[2] + " " + statlines[29].split()[3]
+        self.lomult = statlines[30].split()[3]
+        
     def update_strips(self):
          """Called after update_antenna therefore it updates the strip chart 
          data with latest offset data.
