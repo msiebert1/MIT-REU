@@ -2,7 +2,7 @@
 """
 Created on Tue Jun 23 14:42:12 2015
 
-@author: Matt Siebert
+@author: Matthew Siebert
 """
 
 import numpy as np
@@ -83,7 +83,8 @@ class SourceMap():
         self.wrappoint = 0
         self.azoff = 0
         self.eloff = 0
-        self.usr_offs = ''
+        self.usr_azoff = ''
+        self.usr_eloff = ''
         self.azoffset_data = [0]
         self.eloffset_data = [0]
         self.striptime = [0]
@@ -428,9 +429,9 @@ class SourceMap():
         self.allsources.append(self.to_source_format(ra,dec,"Moon") + " 205 201 201")
     
     def update_antenna(self):
-        """Tails the end of a file that supplies various information regarding
+        """Tails the end of a three files that suppliy various information regarding
         antenna status and the target source. Assigns these values to variables.
-        This will eventually process a message instead of a file.
+        This will eventually process messages instead of a files.
         """
         
         cmdfile = open('/tcu/rt/acu-cmd', 'r')
@@ -444,23 +445,26 @@ class SourceMap():
         statlines = stats.split('\n')
         
         #target source
-        if len (statlines[6]) == 3:
+        if len (statlines[6].split()) == 3:
             self.target = statlines[6].split()[2]
         self.tarsource = ""
-        
         #find the target in the source list and determine the ra and dec
         for source in self.allsources:
             if source.split()[0].lower() == self.target.lower():
                 self.tarsource = source 
                              
         #reset target source to default if it was not in the source list
+        az = 0
+        el = 0
         if self.tarsource == "":
             self.target = ""
         #otherwise calculate the position on the map    
         else:       
-            self.target, self.tarazpoint, self.tarelpoint = \
+            self.target, az, el = \
                                       self.get_source_coords(self.tarsource)
-                                      
+        
+        self.tarazpoint = float(statlines[89].split()[2])
+        self.tarelpoint = float(statlines[90].split()[2])                              
         self.cmdazpoint = float(cmdlines.split()[21])*(180/np.pi)
 
         if self.cmdazpoint < 0:
@@ -483,14 +487,19 @@ class SourceMap():
             self.antazpoints.append(self.antazpoint)
             self.antelpoints.append(self.antelpoint)
             
-        self.skdfile = statlines[48].split()[2]
+#        self.skdfile = '/tcu/schedules/' + statlines[48].split('/')[2]
+        #TODO: set skdfile properly and display live schedule
+        self.skdfile = "(null)"
         self.skdline = statlines[49].split()[2]
         self.wrappoint = float(antlines.split()[21])
         
         #calculate the offsets in antenna position
         self.azoff = self.antazpoint - self.cmdazpoint
         self.eloff = self.antelpoint - self.cmdelpoint
-        self.usr_offs = statlines[31].split()[3] + " " + statlines[31].split()[4]
+        
+        if len(statlines[31].split()) == 5:
+            self.usr_azoff = statlines[31].split()[3] 
+            self.usr_eloff = statlines[31].split()[4]
         
         self.onsource = statlines[59].split()[2]
         
@@ -528,7 +537,8 @@ class SourceMap():
         self.foffs = statlines[20].split()[3] + " " + statlines[20].split()[4] + " " +statlines[20].split()[5]
         
         self.vc = statlines[23].split()[3] + " " + statlines[23].split()[4] + " " + statlines[23].split()[5] + " " + statlines[23].split()[6]
-        self.ifoff = statlines[24].split()[3]
+        if len (statlines[24].split()) == 4:
+            self.ifoff = statlines[24].split()[3]
         self.ifoffa = statlines[25].split()[3]
         self.radecoff = statlines[26].split()[4] + " " + statlines[26].split()[5] + " " + statlines[26].split()[6]
         self.azel = statlines[27].split()[2] + " " + statlines[27].split()[3]

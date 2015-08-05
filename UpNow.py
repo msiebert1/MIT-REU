@@ -2,7 +2,7 @@
 """
 Created on Wed Jul 15 10:07:25 2015
 
-@author: Matt Siebert
+@author: Matthew Siebert
 """
 
 from sourcemap import SourceMap

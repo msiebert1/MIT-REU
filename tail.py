@@ -2,7 +2,7 @@
 """
 Created on Tue Jun 23 14:42:12 2015
 
-@author: Matt Siebert
+@author: Matthew Siebert
 """
 
 def tail( f, lines=20 ):
@@ -42,10 +42,3 @@ def tail( f, lines=20 ):
     all_read_text = ''.join(reversed(blocks))
     return '\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
 
-import os
-
-def tail_unix(f, n, offset=0):
-    stdin,stdout = os.popen2("tail -n "+str(n + offset)+" "+f)
-    stdin.close()
-    lines = stdout.readlines(); stdout.close()
-    return lines[:-offset]

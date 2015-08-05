@@ -1,0 +1,614 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Documentation for 37m GUI &mdash; sourcemap 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sourcemap 0.0.1 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documentation-for-37m-gui">
+<h1>Documentation for 37m GUI<a class="headerlink" href="#documentation-for-37m-gui" title="Permalink to this headline">¶</a></h1>
+<p>Abstract</p>
+<p>Recently the 37m Haystack antenna has undergone major hardware upgrades that have significantly enhanced its capabilities for radio astronomy observations. A new software user interface was developed to accommodate the new antenna and radiometer capabilities. The software includes three applications that facilitate astronomical observation. The main application is a sky map of radio sources that displays important antenna status information. There is also a discrete source scan (DSS) plotting application, and an application to provide an astronomer with an idea of what is currently up in the sky.</p>
+<p>The layout of the sky map application is set up and controlled in in GUI_Form.py. sourcemap.py does does most of the work including: reading a source list, performing coordinate transformations, and keeping track of various map states. sourcemap.py contains the main method to run the application.</p>
+<p>The layout of the the DSS application is set up and controlled in DSS_Form.py. DSSqt.py does most of the work including: reading scan data files, and storing the information useful for plotting in livetime or plotting older files. DSSqt.py contains the main method to run the application</p>
+<p>UpNow.py uses the class and methods provided in sourcemap.py to perform coordinate transformations on sources in order to determine a sky trajectory for the current day. All sources trajectories are displayed in a window.</p>
+<p>The documentation for these programs is provided below. For more information regarding the usage of the GUI please see the user manual.</p>
+<div class="section" id="module-sourcemap">
+<span id="sourcemap-application"></span><h2>SourceMap Application<a class="headerlink" href="#module-sourcemap" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jun 23 14:42:12 2015</p>
+<p>&#64;author: Matthew Siebert</p>
+<dl class="class">
+<dt id="sourcemap.SourceMap">
+<em class="property">class </em><code class="descclassname">sourcemap.</code><code class="descname">SourceMap</code><span class="sig-paren">(</span><em>afile</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance contains information needed in the mapping of various
+radio sources given by a sourcelist. Also includes methods and fields useful
+for the source map gui application.</p>
+<dl class="method">
+<dt id="sourcemap.SourceMap.acquire_allsources">
+<code class="descname">acquire_allsources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.acquire_allsources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through source list and acquires all lines containing a 
+source with coordinates. Also adds on solar system bodies using the same format
+and creates lists of equatorial coordinates needed for grid calculation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.choose_source">
+<code class="descname">choose_source</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.choose_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the source to be highlighted and updates the necessary fields.</p>
+<dl class="docutils">
+<dt>Args: </dt>
+<dd>name (str): The name of the source to be highlighted.</dd>
+</dl>
+<p>This method is only called when the user clicks on a source.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.get_const_decgrid">
+<code class="descname">get_const_decgrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.get_const_decgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs data for a grid with 12 constant declination values to be 
+overlayed. These do not change with time so they do not need to be 
+updated.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>dec_azpoints (nested list (float)): 12 lists of azimuth points, each list</dt>
+<dd>corresponding to a constant value of declination</dd>
+<dt>dec_elpoints (nested list (float)): 12 lists of elevation points, each list</dt>
+<dd>corresponding to a constant value of declination</dd>
+</dl>
+</dd>
+</dl>
+<p>Each list in dec_azpoints will be plotted against the corresponding list
+in dec_elpoints.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.get_const_ragrid">
+<code class="descname">get_const_ragrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.get_const_ragrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs data for a grid with 12 constant right ascension values 
+to be overlayed and updated as time changes.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>ra_azpoints (nested list (float)): 12 lists of azimuth points, each list</dt>
+<dd>corresponding to a constant value of right ascension</dd>
+<dt>ra_elpoints (nested list (float)): 12 lists of elevation points, each list</dt>
+<dd>corresponding to a constant value of right ascension</dd>
+</dl>
+</dd>
+</dl>
+<p>Each list in ra_azpoints will be plotted against the corresponding list
+in ra_elpoints. This will be called periodically so thatthe gridlines 
+reflect the current time of the map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.get_source_coords">
+<code class="descname">get_source_coords</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.get_source_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses pynovas to convert from ra and dec (given in the source list) 
+to azimuth and elevation at Haystack. This is done for the current time 
+of the map.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>source (str): A string in the format of a source in the sourcelist.</dd>
+<dt>Returns:</dt>
+<dd><p class="first">name (str): name of the source with these coordinates</p>
+<p>az (float): azimuth (degrees) of source</p>
+<p class="last">el (float): elevation (degrees) of source</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.get_source_coordsgrid">
+<code class="descname">get_source_coordsgrid</code><span class="sig-paren">(</span><em>coords</em>, <em>time</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.get_source_coordsgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts equatorial coordinates to horizontal coordinates at a 
+specific time.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>coords (tuple (float,float)): A ra (hours) and a dec (degrees) to be</dt>
+<dd>converted to az and el.</dd>
+<dt>time (datetime.datetime): Contains the specific datetime object </dt>
+<dd>to be used in coordinate conversion.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first">az (float): azimuth (degrees)</p>
+<p class="last">el (float): elevation (degrees)</p>
+</dd>
+</dl>
+<p>This is necessary when calculating the ra and dec gridlines
+because ra and dec values are systematically determined and supplied 
+in tuples (not specified by a sourcelist).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.is_dataline">
+<code class="descname">is_dataline</code><span class="sig-paren">(</span><em>aline</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.is_dataline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether a given line in a source list contains a source 
+and its coordinates.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>aline (str): a line from a sourcelist that may contain a source</dt>
+<dd>with coordinate information.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>bool: True if line contains a source, False if the line contains</dt>
+<dd>other information</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.map_livetime">
+<code class="descname">map_livetime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.map_livetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquires the current time and lines of the datafile that include 
+sources with their coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.set_time">
+<code class="descname">set_time</code><span class="sig-paren">(</span><em>time</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.set_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the three time parameters of the source map (univeral time in
+hours, julian date, and local sidereal time) appropriately given a
+datetime object.</p>
+<dl class="docutils">
+<dt>Args: </dt>
+<dd><dl class="first last docutils">
+<dt>time (datetime.datetime): The time to be used in synchronizing</dt>
+<dd>all time parameters of the SourceMap.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.to_source_format">
+<code class="descname">to_source_format</code><span class="sig-paren">(</span><em>rahrs</em>, <em>decdeg</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.to_source_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a name, a right ascension, and a declination into a string 
+with correct source formatting.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">rahrs (float): ra (hours)</p>
+<p>decdeg (float): dec (degrees)</p>
+<p class="last">name (str): The name to be assigned to this source</p>
+</dd>
+<dt>Returns:</dt>
+<dd>str: A string in the format of a source in the sourcelist</dd>
+</dl>
+<p>This is useful for creating sources for ephemeride data, and updating
+equatorial coordinates for other sources.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the time of the SourceMap for the current map state 
+(paused, unpaused/live, unpaused/timelapse). Then updates the coordinates 
+of each source, the coordinates of the solar system bodies, the antenna 
+status, and the strip chart data according to this time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.update_antenna">
+<code class="descname">update_antenna</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.update_antenna" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tails the end of a three files that suppliy various information regarding
+antenna status and the target source. Assigns these values to variables.
+This will eventually process messages instead of a files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.update_ephem">
+<code class="descname">update_ephem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.update_ephem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using pynovas, updates the equatorial positions of the solar system 
+bodies given a time. Also asigns each solar system body a color, therefore, 
+after calling split(), the solar system body sources are always longer than 
+regular sources.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.update_strips">
+<code class="descname">update_strips</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.update_strips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called after update_antenna therefore it updates the strip chart 
+data with latest offset data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sourcemap.SourceMap.year_days">
+<code class="descname">year_days</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sourcemap.SourceMap.year_days" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the number of days in the current year.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>int: 365 if not a leapyear, 366 if a leapyear</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-GUI_Form">
+<span id="sourcemap-gui-layout"></span><h2>SourceMap GUI Layout<a class="headerlink" href="#module-GUI_Form" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Jul 22 15:04:54 2015</p>
+<p>&#64;author: Matthew Siebert</p>
+<dl class="class">
+<dt id="GUI_Form.GUI_Form">
+<em class="property">class </em><code class="descclassname">GUI_Form.</code><code class="descname">GUI_Form</code><span class="sig-paren">(</span><em>newmap</em><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance sets up the basic gui layout for the sourcemap application.</p>
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.add">
+<code class="descname">add</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a user specified celestial object to the list of sources and 
+allows for it to be plotted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.clear_path">
+<code class="descname">clear_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.clear_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the path drawn on the plot from tracking the clicked source 
+and the antenna.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.clear_selsources">
+<code class="descname">clear_selsources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.clear_selsources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the source table so that no sources are selected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.mouseClicked">
+<code class="descname">mouseClicked</code><span class="sig-paren">(</span><em>evt</em><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.mouseClicked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether or not the user clicked on a source and updates the
+plot accordingly.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>evt (MouseClickEvent): Specific coordinates corresponding to where</dt>
+<dd>the mouse was clicked</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.new_sourcelist">
+<code class="descname">new_sourcelist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.new_sourcelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restarts the program so the user can choose a new source list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.pause">
+<code class="descname">pause</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pauses the source map so that the time stays constant.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the user added celestial objects from the sky map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.reset_axes">
+<code class="descname">reset_axes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.reset_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the axes to original dimensions after user has changed them.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.set_time">
+<code class="descname">set_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.set_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pauses the source map and changes the time to the user specified UT.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.toggle_ephems">
+<code class="descname">toggle_ephems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.toggle_ephems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether or not solar system bodies appear on the map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.toggle_radecgrid">
+<code class="descname">toggle_radecgrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.toggle_radecgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether or not the ra/dec grid appears on the map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.toggle_strips">
+<code class="descname">toggle_strips</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.toggle_strips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether or not the strip charts are displaying the offsets.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.toggle_track">
+<code class="descname">toggle_track</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.toggle_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether or not the plot should be tracking a source</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.toggle_track_ant">
+<code class="descname">toggle_track_ant</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.toggle_track_ant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether or not the plot should be tracking a the antenna</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="GUI_Form.GUI_Form.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_Form.GUI_Form.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the sky map gui application to show sources at the correct location
+for the displayed universal time. Also updates all antenna status information.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-DSSqt">
+<span id="discrete-source-scan-application"></span><h2>Discrete Source Scan Application<a class="headerlink" href="#module-DSSqt" title="Permalink to this headline">¶</a></h2>
+<p>Created on Fri Jul 17 15:21:05 2015</p>
+<p>&#64;author: Matthew Siebert</p>
+<dl class="class">
+<dt id="DSSqt.DSSqt">
+<em class="property">class </em><code class="descclassname">DSSqt.</code><code class="descname">DSSqt</code><a class="headerlink" href="#DSSqt.DSSqt" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of a gui that contains plots of temperature vs azimuth
+and temperature vs elevation for their respective DSS scans.</p>
+<dl class="method">
+<dt id="DSSqt.DSSqt.animate">
+<code class="descname">animate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.animate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called continuously until az and el scans are complete. Finds the
+available raw data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSSqt.DSSqt.clear_data">
+<code class="descname">clear_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.clear_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the contents of each data field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSSqt.DSSqt.create_rawdata">
+<code class="descname">create_rawdata</code><span class="sig-paren">(</span><em>afile</em><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.create_rawdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a file of a particular format, parses through
+the file and updates the datafields that are useful for plotting.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>afile (str): a path to a file containing complete dss scan</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSSqt.DSSqt.gaussianfit_az">
+<code class="descname">gaussianfit_az</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.gaussianfit_az" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses parameters given by the data file to create a gaussian fit for 
+the az data.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><p class="first">x (list (float)): x values of the gaussian fit</p>
+<p>y (list (float)): y values of the gaussian fit</p>
+<p>offset (float): offset of the baseline for the gaussian fit</p>
+<p>slope (float): slope of the baseline for the gaussian fit</p>
+<p>amp (float): amplitude of the gaussian fit</p>
+<p>pos (float): position of the gaussian fit</p>
+<p>width (float): width of the gaussian fit</p>
+<p class="last">rating (str): rating of the gaussian fit (GOOD, SO-SO, REJECT)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSSqt.DSSqt.gaussianfit_el">
+<code class="descname">gaussianfit_el</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.gaussianfit_el" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses parameters given by the data file to create a gaussian fit for 
+the el data.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><p class="first">x (list (float)): x values of the gaussian fit</p>
+<p>y (list (float)): y values of the gaussian fit</p>
+<p>offset (float): offset of the baseline for the gaussian fit</p>
+<p>slope (float): slope of the baseline for the gaussian fit</p>
+<p>amp (float): amplitude of the gaussian fit</p>
+<p>pos (float): position of the gaussian fit</p>
+<p>width (float): width of the gaussian fit</p>
+<p class="last">rating (str): rating of the gaussian fit (GOOD, SO-SO, REJECT)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSSqt.DSSqt.is_dataline">
+<code class="descname">is_dataline</code><span class="sig-paren">(</span><em>aline</em><span class="sig-paren">)</span><a class="headerlink" href="#DSSqt.DSSqt.is_dataline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether a given line in a datafile contains scan data.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>aline (str): a line from the datafile that may contain scan data</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>bool: True if the line contains scan data, False if the line contains</dt>
+<dd>other information.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-DSS_Form">
+<span id="discrete-source-scan-gui-layout"></span><h2>Discrete Source Scan GUI Layout<a class="headerlink" href="#module-DSS_Form" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Jul 23 09:18:03 2015</p>
+<p>&#64;author: Matthew Siebert</p>
+<dl class="class">
+<dt id="DSS_Form.DSS_Form">
+<em class="property">class </em><code class="descclassname">DSS_Form.</code><code class="descname">DSS_Form</code><span class="sig-paren">(</span><em>newplot</em><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance sets up the basic gui layout for the discrete source scan 
+application.</p>
+<dl class="method">
+<dt id="DSS_Form.DSS_Form.clear_fits">
+<code class="descname">clear_fits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form.clear_fits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the information in the fit labels. Fit labels must be 
+cleared when a liveplot starts so that no fit data is displayed while 
+a scan is currently running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSS_Form.DSS_Form.latest_live_dss">
+<code class="descname">latest_live_dss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form.latest_live_dss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the latest discrete source scan in livetime. If the scan has 
+completed, this completes the plot and displays the fit data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSS_Form.DSS_Form.plot_dss">
+<code class="descname">plot_dss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form.plot_dss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a specific discrete source scan chosen by the user.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSS_Form.DSS_Form.update_fits">
+<code class="descname">update_fits</code><span class="sig-paren">(</span><em>offset</em>, <em>slope</em>, <em>amp</em>, <em>pos</em>, <em>width</em>, <em>rating</em>, <em>offset2</em>, <em>slope2</em>, <em>amp2</em>, <em>pos2</em>, <em>width2</em>, <em>rating2</em><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form.update_fits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the fit information to be displayed on the right side of the
+gui. This is useful after the user has changed the scan file or after a
+liveplot has finished.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DSS_Form.DSS_Form.update_labels">
+<code class="descname">update_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DSS_Form.DSS_Form.update_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the scan information to be displayed on the left side of the 
+gui. This is useful after the user has changed the scan file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-UpNow">
+<span id="upnow-application"></span><h2>UpNow Application<a class="headerlink" href="#module-UpNow" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Jul 15 10:07:25 2015</p>
+<p>&#64;author: Matthew Siebert</p>
+<dl class="class">
+<dt id="UpNow.UpNow">
+<em class="property">class </em><code class="descclassname">UpNow.</code><code class="descname">UpNow</code><span class="sig-paren">(</span><em>newmap</em><span class="sig-paren">)</span><a class="headerlink" href="#UpNow.UpNow" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance displays source trajectories in the sky over the period of 
+the current day. The plots are designed to give the user an idea of what 
+sources are up when. The curves are flat when the source is below the horizon.
+A green curve indicates a source that is currently above the horizon and a
+red curve indicates a source that is currently below the horizon. This class
+relies on functions from the sourcemap application.</p>
+<dl class="method">
+<dt id="UpNow.UpNow.acquire_source_data">
+<code class="descname">acquire_source_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UpNow.UpNow.acquire_source_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates the fields, allels, and alltimes with nested lists. Each 
+list contains lists of el data or time data that correspond to a 
+specific source. El and time data for each source will eventually be 
+plotted. The names and upnow info for each source are also stored in lists.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="UpNow.UpNow.plot_sources">
+<code class="descname">plot_sources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UpNow.UpNow.plot_sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots elevation vs time for all sources in the sourcelist. Curve is 
+green if source is upnow, red if it is below the horizon.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation for 37m GUI</a><ul>
+<li><a class="reference internal" href="#module-sourcemap">SourceMap Application</a></li>
+<li><a class="reference internal" href="#module-GUI_Form">SourceMap GUI Layout</a></li>
+<li><a class="reference internal" href="#module-DSSqt">Discrete Source Scan Application</a></li>
+<li><a class="reference internal" href="#module-DSS_Form">Discrete Source Scan GUI Layout</a></li>
+<li><a class="reference internal" href="#module-UpNow">UpNow Application</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/sourcemap.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Matt Siebert.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/sourcemap.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

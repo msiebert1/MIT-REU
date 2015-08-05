@@ -2,7 +2,7 @@
 """
 Created on Wed Jul 22 15:04:54 2015
 
-@author: Matt Siebert
+@author: Matthew Siebert
 """
 
 import numpy as np
@@ -87,7 +87,7 @@ class GUI_Form():
                 i.addChild(dec)
         self.sourcetable.sortItems(0, 0) 
         self.sourcetable.headerItem().setText(0, "Sources (J2000)")
-        self.gridLayout.addWidget(self.sourcetable, 1, 0, 21, 1)
+        self.gridLayout.addWidget(self.sourcetable, 1, 0, 24, 1)
         
         #spinbox for user to change the speed of the timelapse
         self.spdlabel = QtGui.QLabel(self.win)
@@ -99,23 +99,23 @@ class GUI_Form():
         #frames per second label in order to see performance
         self.fpslabel = QtGui.QLabel(self.win)
         self.fpslabel.setText("")
-        self.gridLayout.addWidget(self.fpslabel, 22, 0, 1, 1)
+        self.gridLayout.addWidget(self.fpslabel, 25, 0, 1, 1)
         
         #labels for az, el, ra, dec of source/antenna/target
         self.clicklabel = QtGui.QLabel(self.win)
         self.clicklabel.setText("Clicked Source: ")
         self.gridLayout.addWidget(self.clicklabel, 15, 1, 1, 1)
         self.azlabel = QtGui.QLabel(self.win)
-        self.azlabel.setText("Clicked Az: ")
+        self.azlabel.setText("Az: ")
         self.gridLayout.addWidget(self.azlabel, 16, 1, 1, 1)
         self.ellabel = QtGui.QLabel(self.win)
-        self.ellabel.setText("Clicked El: ")
+        self.ellabel.setText("El: ")
         self.gridLayout.addWidget(self.ellabel, 16, 2, 1, 1)
         self.ralabel = QtGui.QLabel(self.win)
-        self.ralabel.setText("Clicked Ra: ")
+        self.ralabel.setText("Ra: ")
         self.gridLayout.addWidget(self.ralabel, 17, 1, 1, 1)
         self.declabel = QtGui.QLabel(self.win)
-        self.declabel.setText("Clicked Dec: ")
+        self.declabel.setText("Dec: ")
         self.gridLayout.addWidget(self.declabel, 17, 2, 1, 1)
         
         self.antlabel = QtGui.QLabel(self.win)
@@ -132,18 +132,37 @@ class GUI_Form():
         self.gridLayout.addWidget(self.track2label, 4, 8, 1, 1)
         
         
+        self.az = QtGui.QLabel(self.win)
+        self.az.setText("<body style=\" font-size:12pt;\">""Az: ")
+        self.gridLayout.addWidget(self.az, 22, 1, 1, 1)
+        self.el = QtGui.QLabel(self.win)
+        self.el.setText("<body style=\" font-size:12pt;\">""El: ")
+        self.gridLayout.addWidget(self.el, 22, 3, 1, 1)
         self.cmdazlabel = QtGui.QLabel(self.win)
-        self.cmdazlabel.setText("<body style=\" color: blue;\">""Cmd Az-El: 00.00 00.00")
-        self.gridLayout.addWidget(self.cmdazlabel, 22, 1, 1, 1)
+        self.cmdazlabel.setText("<body style=\" color: blue;\">""Cmd: 00.00")
+        self.gridLayout.addWidget(self.cmdazlabel, 23, 1, 1, 1)
+        self.cmdellabel = QtGui.QLabel(self.win)
+        self.cmdellabel.setText("<body style=\" color: blue;\">""Cmd: 00.00")
+        self.gridLayout.addWidget(self.cmdellabel, 23, 3, 1, 1)
         self.actazlabel = QtGui.QLabel(self.win)
-        self.actazlabel.setText("<body style=\" color: green;\">""Actual Az-El: 00.00 00.00")
-        self.gridLayout.addWidget(self.actazlabel, 23, 1, 1, 1)
+        self.actazlabel.setText("<body style=\" color: green;\">""Actual: 00.00")
+        self.gridLayout.addWidget(self.actazlabel, 24, 1, 1, 1)
+        self.actellabel = QtGui.QLabel(self.win)
+        self.actellabel.setText("<body style=\" color: green;\">""Actual: 00.00")
+        self.gridLayout.addWidget(self.actellabel, 24, 3, 1, 1)
         self.azofflabel = QtGui.QLabel(self.win)
-        self.azofflabel.setText("Az-El Offset: 00.00 00.00")
-        self.gridLayout.addWidget(self.azofflabel, 24, 1, 1, 1)
-        self.usrofflabel = QtGui.QLabel(self.win)
-        self.usrofflabel.setText("Usr Offset: 00.00 00.00")
-        self.gridLayout.addWidget(self.usrofflabel, 22, 2, 1, 1)
+        self.azofflabel.setText("az error: 00.00 ")
+        self.gridLayout.addWidget(self.azofflabel, 19, 5, 1, 1)
+        self.elofflabel = QtGui.QLabel(self.win)
+        self.elofflabel.setText("el error: 00.00 ")
+        self.gridLayout.addWidget(self.elofflabel, 20, 5, 1, 1)
+        self.usrazofflabel = QtGui.QLabel(self.win)
+        self.usrazofflabel.setText("Usr Offset: 00.00")
+        self.gridLayout.addWidget(self.usrazofflabel, 25, 1, 1, 1)
+        self.usrelofflabel = QtGui.QLabel(self.win)
+        self.usrelofflabel.setText("Usr Offset: 00.00")
+        self.gridLayout.addWidget(self.usrelofflabel, 25, 3, 1, 1)
+        
         
         self.targetlabel = QtGui.QLabel(self.win)
         self.targetlabel.setText("<body style=\" color: red;\">""Target Source: ")
@@ -152,16 +171,16 @@ class GUI_Form():
         self.onlabel.setText("On Source: False")
         self.gridLayout.addWidget(self.onlabel, 15, 4, 1, 1)
         self.tarazlabel = QtGui.QLabel(self.win)
-        self.tarazlabel.setText("Target Az: ")
+        self.tarazlabel.setText("Az: ")
         self.gridLayout.addWidget(self.tarazlabel, 16, 3, 1, 1)
         self.tarellabel = QtGui.QLabel(self.win)
-        self.tarellabel.setText("Target El: ")
+        self.tarellabel.setText("El: ")
         self.gridLayout.addWidget(self.tarellabel, 16, 4, 1, 1)
         self.tarralabel = QtGui.QLabel(self.win)
-        self.tarralabel.setText("Target Ra: ")
+        self.tarralabel.setText("Ra: ")
         self.gridLayout.addWidget(self.tarralabel, 17, 3, 1, 1)
         self.tardeclabel = QtGui.QLabel(self.win)
-        self.tardeclabel.setText("Target Dec: ")
+        self.tardeclabel.setText("Dec: ")
         self.gridLayout.addWidget(self.tardeclabel, 17, 4, 1, 1)
         
         self.biaslabel = QtGui.QLabel(self.win)
@@ -242,7 +261,7 @@ class GUI_Form():
         self.gridLayout.addWidget(self.durlabel, 11, 8, 1, 1)
         
         self.swinfolabel = QtGui.QLabel(self.win)
-        self.swinfolabel.setText("<body style=\" font-size:12pt;\">""Switcher Info: ")
+        self.swinfolabel.setText("<body style=\" font-size:12pt;\">""Radiometer Info: ")
         self.gridLayout.addWidget(self.swinfolabel, 21, 5, 1, 1)
         self.freqlabel = QtGui.QLabel(self.win)
         self.freqlabel.setText("Frequency: ")
@@ -266,9 +285,6 @@ class GUI_Form():
         self.foffslabel.setText("freq soffs: ")
         self.gridLayout.addWidget(self.foffslabel, 24, 6, 1, 1)
         
-        self.swinfolabel = QtGui.QLabel(self.win)
-        self.swinfolabel.setText("<body style=\" font-size:12pt;\">""Other Info: ")
-        self.gridLayout.addWidget(self.swinfolabel, 21, 7, 1, 1)
         self.vclabel = QtGui.QLabel(self.win)
         self.vclabel.setText("vc offset: ")
         self.gridLayout.addWidget(self.vclabel, 22, 7, 1, 1)
@@ -329,8 +345,8 @@ class GUI_Form():
         self.p.setRange(xRange=[0, 360], yRange=[0, 90], padding = 0)
         self.p.setLabels(left = "Elevation", bottom = "Azimuth")
         self.p.getViewBox().setLimits(xMin = 0, xMax = 360, yMin = -90, yMax = 90)
-        self.azstrip.setLabels(left = "Az Offset")
-        self.elstrip.setLabels(left = "El Offset")
+        self.azstrip.setLabels(left = "Az Error")
+        self.elstrip.setLabels(left = "El Error")
         self.azstrip.getAxis('bottom').setStyle(showValues = False)
         self.elstrip.getAxis('bottom').setStyle(showValues = False)
         self.vb = self.p.plotItem.vb
@@ -537,7 +553,7 @@ class GUI_Form():
                    
     def update(self):
         """Updates the sky map gui application to show sources at the correct location
-        for the displayed universal time.    
+        for the displayed universal time. Also updates all antenna status information.   
         """
         
         self.counter = self.counter + 1
@@ -554,31 +570,40 @@ class GUI_Form():
         
         degree_sign= u'\N{DEGREE SIGN}'
         k = self.newmap.clickra.find('.')
-        self.ralabel.setText(" Clicked Ra: %s" % (self.newmap.clickra[:k] + self.newmap.clickra[k:k+4]))
+        self.ralabel.setText("Ra: %s" % (self.newmap.clickra[:k] + self.newmap.clickra[k:k+4]))
         i = self.newmap.clickdec.find('.')
-        self.declabel.setText(" Clicked Dec: %s" % (self.newmap.clickdec[:i] + self.newmap.clickdec[i:i+4]))
+        self.declabel.setText("Dec: %s" % (self.newmap.clickdec[:i] + self.newmap.clickdec[i:i+4]))
         
         j = self.newmap.tarra.find('.')
-        self.tarralabel.setText(" Target Ra: %s" 
+        self.tarralabel.setText("Ra: %s" 
                            % (self.newmap.tarra[:j] + self.newmap.tarra[j:j+4]))
         m = self.newmap.tardec.find('.')
-        self.tardeclabel.setText(" Target Dec: %s" 
+        self.tardeclabel.setText("Dec: %s" 
                             % (self.newmap.tardec[:m] + self.newmap.tardec[m:m+4]))
         
         self.onlabel.setText("On Source: %s" % self.newmap.onsource)
         
-        self.actazlabel.setText("<body style=\" color: green;\">""Actual Az-El: %.2f" 
-                               % (self.newmap.antazpoint) + degree_sign + " %.2f" 
+        self.actazlabel.setText("<body style=\" color: green;\">""Actual: %.2f" 
+                               % (self.newmap.antazpoint) + degree_sign)
+                               
+        self.actellabel.setText("<body style=\" color: green;\">""Actual: %.2f" 
                                % (self.newmap.antelpoint) + degree_sign)
-        self.cmdazlabel.setText("<body style=\" color: blue;\">""Cmd Az-El: %.2f" 
-                               % (self.newmap.cmdazpoint) + degree_sign + " %.2f" 
+                               
+        self.cmdazlabel.setText("<body style=\" color: blue;\">""Cmd: %.2f" 
+                               % (self.newmap.cmdazpoint) + degree_sign)
+                               
+        self.cmdellabel.setText("<body style=\" color: blue;\">""Cmd: %.2f" 
                                % (self.newmap.cmdelpoint) + degree_sign)
         
-        self.azofflabel.setText("Az-El Offset: %.3f" 
-                               % (self.newmap.azoff) + degree_sign + " %.3f" 
+        self.azofflabel.setText("az error: %.3f" 
+                               % (self.newmap.azoff) + degree_sign)
+                               
+        self.elofflabel.setText("el error: %.3f" 
                                % (self.newmap.eloff) + degree_sign)
         
-        self.usrofflabel.setText("Usr Offset: %s" % self.newmap.usr_offs)
+        self.usrazofflabel.setText("Usr Offset: %s" % self.newmap.usr_azoff)
+        
+        self.usrelofflabel.setText("Usr Offset: %s" % self.newmap.usr_eloff)
         
         self.azb1label.setText("azbias1: %s" % self.newmap.azbias1)
         self.azb2label.setText("azbias2: %s" % self.newmap.azbias2)
@@ -772,15 +797,15 @@ class GUI_Form():
             tar_tracktext = pg.TextItem(text = "%s" % self.newmap.target, color = 'r')
             self.p.addItem(tar_tracktext)       
             tar_tracktext.setPos(self.newmap.tarazpoint, self.newmap.tarelpoint)
-            self.tarazlabel.setText(" Target Az: %.2f" 
+            self.tarazlabel.setText("Az: %.2f" 
                                % (self.newmap.tarazpoint) + degree_sign)
-            self.tarellabel.setText(" Target El: %.2f" 
+            self.tarellabel.setText("El: %.2f" 
                                % (self.newmap.tarelpoint) + degree_sign)
         else:
-            self.tarazlabel.setText(" Target Az: ")
-            self.tarellabel.setText(" Target El: ")
-            self.tarralabel.setText(" Target Ra: ")
-            self.tardeclabel.setText(" Target Dec: ")
+            self.tarazlabel.setText("Az: ")
+            self.tarellabel.setText("El: ")
+            self.tarralabel.setText("Ra: ")
+            self.tardeclabel.setText("Dec: ")
         
         #update the clicked source information     
         self.clicklabel.setText("Clicked Source: %s" % self.newmap.clicksource)
@@ -790,13 +815,13 @@ class GUI_Form():
             tracktext = pg.TextItem(text = "%s" % self.newmap.clicksource, color = 'y')
             self.p.addItem(tracktext)
             tracktext.setPos(self.newmap.clickazpoint, self.newmap.clickelpoint)
-            self.azlabel.setText(" Clicked Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
-            self.ellabel.setText(" Clicked El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
+            self.azlabel.setText("Az: %.2f" % self.newmap.clickazpoint + "%s" %degree_sign)
+            self.ellabel.setText("El: %.2f" % self.newmap.clickelpoint + "%s" %degree_sign)
         else:
-            self.azlabel.setText(" Clicked Az: ")
-            self.ellabel.setText(" Clicked El: ")
-            self.ralabel.setText(" Clicked Ra: ")
-            self.declabel.setText(" Clicked Dec: ")
+            self.azlabel.setText("Az: ")
+            self.ellabel.setText("El: ")
+            self.ralabel.setText("Ra: ")
+            self.declabel.setText("Dec: ")
 
         
         #update the solar system body positions    

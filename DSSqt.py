@@ -2,7 +2,7 @@
 """
 Created on Fri Jul 17 15:21:05 2015
 
-@author: Matt Siebert
+@author: Matthew Siebert
 """
 from scipy import exp
 import numpy as np
